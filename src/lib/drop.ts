@@ -1,16 +1,18 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-const DROP_DIR = path.join(process.cwd(), "content", "drop");
-
-const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
-const VIDEO_EXT = new Set([".mp4", ".webm", ".mov", ".m4v"]);
+const INTAKE_PATH = path.join(process.cwd(), "content", "portfolio-intake.csv");
+const MANIFEST_PATH = path.join(process.cwd(), "content", "media-manifest.json");
 
 export type DropFile = {
   url: string;
   filename: string;
   ext: string;
   kind: "image" | "video";
+  width: number;
+  height: number;
+  posterUrl?: string;
+  duration?: number;
 };
 
 export type ProjectMedia = {
@@ -19,90 +21,124 @@ export type ProjectMedia = {
   videos: DropFile[];
 };
 
-function toUrl(relativePath: string) {
-  const encoded = relativePath
-    .split(/[/\\]/)
+export type IntakeRow = {
+  sourceFile: string;
+  filePath: string;
+  posterPath: string;
+  mediaType: DropFile["kind"];
+  projectSlug: string;
+  title: string;
+  contentTypes: string;
+  contributionChips: string;
+  description: string;
+  year: string;
+  organization: string;
+  externalUrl: string;
+  publish: string;
+  media: DropFile;
+};
+
+type ManifestRow = {
+  optimized?: string;
+  width?: number;
+  height?: number;
+  optimized_width?: number;
+  optimized_height?: number;
+  duration_seconds?: number;
+};
+
+function parseCsv(source: string) {
+  const records: string[][] = [];
+  let record: string[] = [];
+  let field = "";
+  let quoted = false;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index];
+    if (char === '"') {
+      if (quoted && source[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (char === "," && !quoted) {
+      record.push(field);
+      field = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && source[index + 1] === "\n") index += 1;
+      record.push(field);
+      if (record.some(Boolean)) records.push(record);
+      record = [];
+      field = "";
+    } else {
+      field += char;
+    }
+  }
+
+  if (field || record.length) {
+    record.push(field);
+    records.push(record);
+  }
+  return records;
+}
+
+function publicUrl(filePath: string) {
+  const normalized = filePath.replaceAll("\\", "/").replace(/^public\//, "");
+  return `/${normalized
+    .split("/")
     .map((part) => encodeURIComponent(part))
-    .join("/");
-  return `/media/${encoded}`;
+    .join("/")}`;
 }
 
-function kindFor(ext: string): DropFile["kind"] | null {
-  if (IMAGE_EXT.has(ext)) return "image";
-  if (VIDEO_EXT.has(ext)) return "video";
-  return null;
-}
+export async function getIntakeRows(): Promise<IntakeRow[]> {
+  const [intakeSource, manifestSource] = await Promise.all([
+    fs.readFile(INTAKE_PATH, "utf8"),
+    fs.readFile(MANIFEST_PATH, "utf8"),
+  ]);
+  const [headers, ...records] = parseCsv(intakeSource.replace(/^\uFEFF/, ""));
+  const manifest = JSON.parse(manifestSource) as ManifestRow[];
+  const metadata = new Map(
+    manifest
+      .filter((item) => item.optimized)
+      .map((item) => [item.optimized!.replaceAll("\\", "/"), item]),
+  );
 
-async function fileExists(filePath: string) {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
+  return records.flatMap((values) => {
+    const row = Object.fromEntries(headers.map((header, index) => [header, values[index]?.trim() ?? ""]));
+    const filePath = row.file_path;
+    const mediaType = row.media_type === "video" ? "video" : row.media_type === "image" ? "image" : null;
+    const details = metadata.get(filePath.replaceAll("\\", "/"));
+    const width = details?.optimized_width ?? details?.width;
+    const height = details?.optimized_height ?? details?.height;
+    const hidden = ["no", "false", "0", "draft"].includes(row.publish.toLowerCase());
 
-async function listDropEntries() {
-  if (!(await fileExists(DROP_DIR))) return [];
-  return fs.readdir(DROP_DIR, { withFileTypes: true });
-}
+    if (!filePath || !mediaType || !width || !height || hidden) return [];
 
-function dropFileFrom(relativePath: string, filename: string): DropFile | null {
-  const ext = path.extname(filename).toLowerCase();
-  const kind = kindFor(ext);
-  if (!kind) return null;
-  return {
-    url: toUrl(relativePath),
-    filename,
-    ext,
-    kind,
-  };
-}
-
-function stem(filename: string) {
-  return path.parse(filename).name.toLowerCase();
-}
-
-function rankCover(file: DropFile, slug: string) {
-  const name = stem(file.filename);
-  if (name === slug || name === `${slug}-cover` || name === "cover") return 0;
-  if (name.startsWith(`${slug}-cover`)) return 1;
-  if (name === `${slug}-1` || name === "1") return 2;
-  return 10;
-}
-
-export async function getProjectMedia(slug: string): Promise<ProjectMedia> {
-  const entries = await listDropEntries();
-  const collected: DropFile[] = [];
-
-  for (const entry of entries) {
-    if (entry.isFile()) {
-      const name = stem(entry.name);
-      if (name === slug || name.startsWith(`${slug}-`)) {
-        const file = dropFileFrom(entry.name, entry.name);
-        if (file) collected.push(file);
-      }
-    }
-
-    if (entry.isDirectory() && entry.name.toLowerCase() === slug) {
-      const nestedDir = path.join(DROP_DIR, entry.name);
-      const nested = await fs.readdir(nestedDir, { withFileTypes: true });
-      for (const child of nested) {
-        if (!child.isFile()) continue;
-        const relative = `${entry.name}/${child.name}`;
-        const file = dropFileFrom(relative, child.name);
-        if (file) collected.push(file);
-      }
-    }
-  }
-
-  const images = collected.filter((file) => file.kind === "image");
-  const videos = collected.filter((file) => file.kind === "video");
-  images.sort((a, b) => rankCover(a, slug) - rankCover(b, slug) || a.filename.localeCompare(b.filename));
-  videos.sort((a, b) => a.filename.localeCompare(b.filename));
-
-  const cover = images[0] ?? videos[0];
-  const gallery = images.filter((file) => file !== cover);
-
-  return { cover, gallery, videos };
+    return [{
+      sourceFile: row.source_file,
+      filePath,
+      posterPath: row.poster_path,
+      mediaType,
+      projectSlug: row.project_slug,
+      title: row.title,
+      contentTypes: row.content_types,
+      contributionChips: row.contribution_chips,
+      description: row.description,
+      year: row.year,
+      organization: row.organization,
+      externalUrl: row.external_url,
+      publish: row.publish,
+      media: {
+        url: publicUrl(filePath),
+        filename: path.basename(filePath),
+        ext: path.extname(filePath).toLowerCase(),
+        kind: mediaType,
+        width,
+        height,
+        posterUrl: row.poster_path ? publicUrl(row.poster_path) : undefined,
+        duration: details?.duration_seconds,
+      },
+    }];
+  });
 }

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { categoryIcons } from "@/lib/icons";
 import type { Accent, Category, CoverShape } from "../../../content/projects";
+import Image from "next/image";
 
 const shapeClass: Record<CoverShape, string> = {
   landscape: "aspect-[16/10] min-h-[11rem]",
@@ -54,36 +55,47 @@ export function MediaFrame({
   src,
   alt,
   kind,
-  shape,
+  width,
+  height,
+  posterUrl,
+  controls = false,
   className,
 }: {
   src: string;
   alt: string;
   kind: "image" | "video";
-  shape?: CoverShape;
+  width: number;
+  height: number;
+  posterUrl?: string;
+  controls?: boolean;
   className?: string;
 }) {
   return (
     <div
-      className={cn(
-        "relative overflow-hidden bg-sky/30",
-        shape ? shapeClass[shape] : "aspect-video",
-        className,
-      )}
+      className={cn("relative overflow-hidden", className)}
+      style={{ aspectRatio: `${width} / ${height}` }}
     >
       {kind === "video" ? (
         <video
           src={src}
-          className="size-full object-cover"
-          muted
+          poster={posterUrl}
+          width={width}
+          height={height}
+          className="block size-full object-contain"
+          controls={controls}
+          muted={!controls}
           playsInline
-          loop
           preload="metadata"
         />
       ) : (
-        // Dropped files are served from /media and can be any raster the user dumps.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} className="size-full object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          sizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
+          className="block size-full object-contain"
+        />
       )}
     </div>
   );

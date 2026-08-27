@@ -44,7 +44,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
   }, [active, projects]);
 
   return (
-    <section id="work" className="mx-auto max-w-6xl px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
+    <section id="work" className="mx-auto max-w-[90rem] px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
       <div className="glass-panel mb-5 overflow-hidden rounded-[2rem]">
         <div className="px-5 py-6 sm:px-7">
           <div>
@@ -61,7 +61,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
           </div>
         </div>
       </div>
-      <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
           {filters.map((filter) => {
             const Icon = filter.icon;
             const selected = active === filter.id;
@@ -91,7 +91,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
             );
           })}
       </div>
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 xl:columns-4">
+      <div className="columns-[17rem] gap-4">
         {visible.map((project) => (
           <ProjectCard key={project.slug} project={project} />
         ))}

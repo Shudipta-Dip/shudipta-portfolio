@@ -8,12 +8,13 @@ import { ContributionRow } from "@/components/portfolio/contribution-chip";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { categoryMeta } from "../../../../content/projects";
-import { getProjectBySlug, getRelatedProjects, projects } from "@/lib/portfolio";
+import { getProjectBySlug, getProjectsWithMedia, getRelatedProjects } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getProjectsWithMedia();
   return projects.map((project) => ({ slug: project.slug }));
 }
 
@@ -40,8 +41,10 @@ export default async function ProjectPage({
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
-  const related = getRelatedProjects(project);
+  const allProjects = await getProjectsWithMedia();
+  const related = getRelatedProjects(allProjects, project);
   const cover = project.media.cover;
+  const portraitCover = cover ? cover.width / cover.height < 0.9 : false;
   const extras = [
     ...project.media.gallery,
     ...project.media.videos.filter((file) => file.url !== cover?.url),
@@ -54,13 +57,22 @@ export default async function ProjectPage({
         Back to the board
       </Link>
 
-      <div className="glass-panel overflow-hidden rounded-[2rem]">
+      <div
+        className={cn(
+          "glass-panel overflow-hidden rounded-[2rem]",
+          portraitCover && "lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(22rem,1fr)] lg:items-start",
+        )}
+      >
         {cover ? (
           <MediaFrame
             src={cover.url}
             alt={project.title}
             kind={cover.kind}
-            className="max-h-[32rem] min-h-[16rem] w-full rounded-none"
+            width={cover.width}
+            height={cover.height}
+            posterUrl={cover.posterUrl}
+            controls={cover.kind === "video"}
+            className="w-full rounded-none"
           />
         ) : (
           <CoverArt
@@ -115,18 +127,29 @@ export default async function ProjectPage({
       {extras.length ? (
         <section className="mt-8">
           <h2 className="font-heading mb-4 text-2xl font-semibold">More from the drop</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="columns-1 gap-4 md:columns-2">
             {extras.map((file) => (
-              <div key={file.url} className="glass-panel overflow-hidden rounded-[1.75rem]">
-                <MediaFrame src={file.url} alt="" kind={file.kind} className="min-h-[12rem]" />
+              <div
+                key={file.url}
+                className="glass-panel mb-4 inline-block w-full break-inside-avoid overflow-hidden rounded-[1.75rem]"
+              >
+                <MediaFrame
+                  src={file.url}
+                  alt={`${project.title} portfolio media`}
+                  kind={file.kind}
+                  width={file.width}
+                  height={file.height}
+                  posterUrl={file.posterUrl}
+                  controls={file.kind === "video"}
+                />
               </div>
             ))}
           </div>
         </section>
       ) : (
         <p className="mt-6 text-sm text-muted-foreground">
-          Drop stills or cuts named <code className="font-medium text-foreground">{project.slug}</code> into{" "}
-          <code className="font-medium text-foreground">content/drop/</code> and they will land here.
+          Assign media to <code className="font-medium text-foreground">{project.slug}</code> in{" "}
+          <code className="font-medium text-foreground">content/portfolio-intake.csv</code> to show it here.
         </p>
       )}
 
