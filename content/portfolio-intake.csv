@@ -1,15 +1,14 @@
-﻿source_file,file_path,poster_path,media_type,project_slug,title,content_types,contribution_chips,description,year,organization,external_url,publish
-1. Aware - Business Owner,public/media/1-aware-business-owner.mp4,public/media/1-aware-business-owner-poster.webp,video,,,,,,,,,
-1. Aware - Students,public/media/1-aware-students.mp4,public/media/1-aware-students-poster.webp,video,,,,,,,,,
-1.3 Aware Static - All.png,public/media/1-3-aware-static-all.webp,,image,,,,,,,,,
-2.a Engage,public/media/2-a-engage.mp4,public/media/2-a-engage-poster.webp,video,,,,,,,,,
-2.b Engage,public/media/2-b-engage.webp,,image,,,,,,,,,
-3. Subcribe Alt.gif,public/media/3-subcribe-alt.mp4,public/media/3-subcribe-alt-poster.webp,video,,,,,,,,,
-3. Subcribe.mp4,public/media/3-subcribe.mp4,public/media/3-subcribe-poster.webp,video,,,,,,,,,
-3. Subscribe - Students,public/media/3-subscribe-students.mp4,public/media/3-subscribe-students-poster.webp,video,,,,,,,,,
-4. Purchase - All,public/media/4-purchase-all.webp,,image,,,,,,,,,
-4. Purchase - Business Owner,public/media/4-purchase-business-owner.webp,,image,,,,,,,,,
-4. Purchase - S+F,public/media/4-purchase-s-f.mp4,public/media/4-purchase-s-f-poster.webp,video,,,,,,,,,
+source_file,file_path,poster_path,media_type,project_slug,title,content_types,contribution_chips,description,year,organization,external_url,publish
+1. Aware - Business Owner,public/media/1-aware-business-owner.mp4,public/media/1-aware-business-owner-poster.webp,video,saas-promo,Trend Recreation,reel,idea|shoot|edit,Viral Kumar reel as aware content proposal for instagram business owners,2026,Academics,,yes
+1. Aware - Students,public/media/1-aware-students.mp4,public/media/1-aware-students-poster.webp,video,saas-promo,Scrollstopper,reel,idea|shoot|edit,Unique hook for aware content proposal to students,2026,Academics,,yes
+1.3 Aware Static - All.png,public/media/1-3-aware-static-all.webp,,image,saas-promo,Mock Recommendation,static,idea|design,A spin on the google search result trending static,2026,Academics,,yes
+2.a Engage,public/media/2-a-engage.mp4,public/media/2-a-engage-poster.webp,video,bakery-promo,Story Poll,story,idea|edit,Instagram Story Poll ad format for home bakery,2026,Love Doughs,,yes
+2.b Engage,public/media/2-b-engage.webp,,image,bakery-promo,Giveaway Post,static,idea|design,WC giveaway campaign proposal,2026,Love Doughs,,yes
+3. Subcribe.mp4,public/media/3-subcribe.mp4,public/media/3-subcribe-poster.webp,video,bakery-promo,GDN Banner,banner,idea|edit,Google Ads banner placement proposal,2026,Love Doughs,,yes
+3. Subscribe - Students,public/media/3-subscribe-students.mp4,public/media/3-subscribe-students-poster.webp,video,saas-promo,Secret to Success,reel,idea|shoot|edit,UGC idea for sales campaign proposal,2026,Academics,,yes
+4. Purchase - All,public/media/4-purchase-all.webp,,image,saas-promo,Year Recap,static,idea|design,Thumbnail for Year Recap reaction video,2026,Academics,,yes
+4. Purchase - Business Owner,public/media/4-purchase-business-owner.webp,,image,saas-promo,Festival Discount,static,idea|design,Occasion-based discount announcement mockup,2026,Academics,,yes
+4. Purchase - S+F,public/media/4-purchase-s-f.mp4,public/media/4-purchase-s-f-poster.webp,video,saas-promo,Cinematic UGC,reel,idea|edit,Hyperstylized storytelling reel for sales campaign,2026,Academics,,yes
 4.b Purchase,public/media/4-b-purchase.mp4,public/media/4-b-purchase-poster.webp,video,,,,,,,,,
 4.c Purchase,public/media/4-c-purchase.mp4,public/media/4-c-purchase-poster.webp,video,,,,,,,,,
 4.d Purchase (1).png,public/media/4-d-purchase-1.webp,,image,,,,,,,,,
@@ -29,3 +28,4 @@ Trade Cookies for Chips _ Love Doughs.webm,public/media/trade-cookies-for-chips-
 WhatsApp Video 2026-02-02 at 12.54.03 PM.mp4,public/media/whatsapp-video-2026-02-02-at-12-54-03-pm.mp4,public/media/whatsapp-video-2026-02-02-at-12-54-03-pm-poster.webp,video,,,,,,,,,
 WhatsApp Video 2026-06-24 at 11.46.52 AM.mp4,public/media/whatsapp-video-2026-06-24-at-11-46-52-am.mp4,public/media/whatsapp-video-2026-06-24-at-11-46-52-am-poster.webp,video,,,,,,,,,
 নারায়ণগঞ্জে তরুণ-তরুণীদের হাতে কার্ডস্টকের রাজ্য _ The Business Standard.mp4,public/media/the-business-standard.mp4,public/media/the-business-standard-poster.webp,video,,,,,,,,,
+3. Subcribe Alt.gif,public/media/3-subcribe-alt.mp4,public/media/3-subcribe-alt-poster.webp,video,,,,,,,,,

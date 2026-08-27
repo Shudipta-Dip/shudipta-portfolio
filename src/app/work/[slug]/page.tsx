@@ -11,7 +11,7 @@ import { categoryMeta } from "../../../../content/projects";
 import { getProjectBySlug, getProjectsWithMedia, getRelatedProjects } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const projects = await getProjectsWithMedia();

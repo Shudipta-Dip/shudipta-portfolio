@@ -1,5 +1,4 @@
 import {
-  categories,
   projects,
   type Accent,
   type Category,
@@ -33,6 +32,39 @@ const contributionIds = new Set<ContributionId>([
 
 const accents: Accent[] = ["cyan", "lime", "aqua", "meadow"];
 
+const categoryAliases: Record<string, Category> = {
+  design: "design",
+  reels: "reels",
+  reel: "reels",
+  product: "product",
+  data: "data",
+  static: "design",
+  story: "reels",
+  banner: "design",
+  print: "design",
+};
+
+const contributionAliases: Record<string, ContributionId> = {
+  ux: "ux",
+  visual: "visual",
+  design: "visual",
+  copy: "copy",
+  strategy: "strategy",
+  idea: "strategy",
+  video: "video",
+  shoot: "video",
+  edit: "edit",
+  ads: "ads",
+  print: "print",
+  product: "product",
+  code: "code",
+  ml: "ml",
+  dashboard: "dashboard",
+  research: "research",
+  seo: "seo",
+  gtm: "gtm",
+};
+
 function splitPipe(value: string) {
   return value
     .split("|")
@@ -41,14 +73,16 @@ function splitPipe(value: string) {
 }
 
 function slugify(value: string) {
-  return value
-    .normalize("NFKD")
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/[\s_]+/g, "-")
-    .replace(/-+/g, "-")
-    .toLowerCase()
-    .slice(0, 64) || "portfolio-media";
+  return (
+    value
+      .normalize("NFKD")
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .replace(/[\s_]+/g, "-")
+      .replace(/-+/g, "-")
+      .toLowerCase()
+      .slice(0, 64) || "portfolio-media"
+  );
 }
 
 function displayTitle(filename: string) {
@@ -59,18 +93,31 @@ function displayTitle(filename: string) {
     .trim();
 }
 
+function uniqueSlug(base: string, used: Set<string>) {
+  let candidate = base;
+  let n = 2;
+  while (used.has(candidate)) {
+    candidate = `${base}-${n}`;
+    n += 1;
+  }
+  used.add(candidate);
+  return candidate;
+}
+
 function categoriesFor(row: IntakeRow): Category[] {
-  const selected = splitPipe(row.contentTypes).filter((item): item is Category =>
-    categories.includes(item as Category),
-  );
-  return selected.length ? selected : [row.mediaType === "video" ? "reels" : "design"];
+  const selected = splitPipe(row.contentTypes)
+    .map((item) => categoryAliases[item])
+    .filter((item): item is Category => Boolean(item));
+  return selected.length ? [...new Set(selected)] : [row.mediaType === "video" ? "reels" : "design"];
 }
 
 function contributionsFor(row: IntakeRow): ContributionId[] {
-  const selected = splitPipe(row.contributionChips).filter((item): item is ContributionId =>
-    contributionIds.has(item as ContributionId),
-  );
-  return selected.length ? selected : [row.mediaType === "video" ? "video" : "visual"];
+  const selected = splitPipe(row.contributionChips)
+    .map((item) => contributionAliases[item])
+    .filter((item): item is ContributionId => Boolean(item) && contributionIds.has(item));
+  return selected.length
+    ? [...new Set(selected)]
+    : [row.mediaType === "video" ? "video" : "visual"];
 }
 
 function shapeFor(width: number, height: number): CoverShape {
@@ -91,16 +138,23 @@ function mediaFor(rows: IntakeRow[]): ProjectMedia {
   };
 }
 
-function makePreviewProject(rows: IntakeRow[], index: number): ProjectWithMedia {
+function makePreviewProject(
+  rows: IntakeRow[],
+  index: number,
+  usedSlugs: Set<string>,
+): ProjectWithMedia {
   const lead = rows[0];
   const title = lead.title || displayTitle(lead.sourceFile);
   const description =
     lead.description ||
     `${lead.mediaType === "video" ? "Video" : "Design"} work from the portfolio media drop.`;
   const links = lead.externalUrl ? [{ label: "Visit project", href: lead.externalUrl }] : undefined;
+  const baseSlug = lead.title
+    ? slugify(lead.title)
+    : lead.projectSlug || `drop-${slugify(displayTitle(lead.sourceFile))}`;
 
   return {
-    slug: lead.projectSlug || `drop-${slugify(displayTitle(lead.sourceFile))}`,
+    slug: uniqueSlug(baseSlug, usedSlugs),
     title,
     tagline: description,
     summary: description,
@@ -146,11 +200,14 @@ function applyIntake(project: Project, rows: IntakeRow[]): ProjectWithMedia {
 
 export async function getProjectsWithMedia(): Promise<ProjectWithMedia[]> {
   const intake = await getIntakeRows();
+  const knownSlugs = new Set(projects.map((project) => project.slug));
   const assigned = new Map<string, IntakeRow[]>();
   const previews: IntakeRow[][] = [];
 
   for (const row of intake) {
-    if (row.projectSlug) {
+    // Only fold into the hand-authored project catalog when the slug matches.
+    // Shared campaign labels like saas-promo stay as individual titled cards.
+    if (row.projectSlug && knownSlugs.has(row.projectSlug)) {
       assigned.set(row.projectSlug, [...(assigned.get(row.projectSlug) ?? []), row]);
     } else {
       previews.push([row]);
@@ -160,11 +217,10 @@ export async function getProjectsWithMedia(): Promise<ProjectWithMedia[]> {
   const established = projects
     .filter((project) => assigned.has(project.slug))
     .map((project) => applyIntake(project, assigned.get(project.slug) ?? []));
-  const knownSlugs = new Set(projects.map((project) => project.slug));
-  const customGroups = [...assigned.entries()]
-    .filter(([slug]) => !knownSlugs.has(slug))
-    .map(([, rows]) => rows);
-  const previewProjects = [...previews, ...customGroups].map(makePreviewProject);
+  const usedSlugs = new Set(established.map((project) => project.slug));
+  const previewProjects = previews.map((rows, index) =>
+    makePreviewProject(rows, index, usedSlugs),
+  );
 
   return [...previewProjects, ...established];
 }
