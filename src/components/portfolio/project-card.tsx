@@ -24,7 +24,11 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
               shape={project.coverShape}
             />
           ) : (
-            <CoverArt accent={project.accent} shape={project.coverShape} />
+            <CoverArt
+              accent={project.accent}
+              category={project.categories[0]}
+              shape={project.coverShape}
+            />
           )}
           <div className="absolute top-3 right-3 flex items-center gap-1.5">
             {hasVideo ? (

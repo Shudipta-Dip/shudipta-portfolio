@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nunito, Quicksand } from "next/font/google";
 
 import { AeroScene } from "@/components/aero/scene";
-import { SiteFooter, SiteHeader } from "@/components/layout/site-chrome";
+import { SiteHeader } from "@/components/layout/site-chrome";
 import { Providers } from "@/components/providers";
 import { profile } from "../../content/profile";
 import "./globals.css";
@@ -29,6 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${nunito.variable} ${quicksand.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
@@ -36,7 +37,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AeroScene />
           <SiteHeader />
           <main className="flex flex-1 flex-col">{children}</main>
-          <SiteFooter />
         </Providers>
       </body>
     </html>

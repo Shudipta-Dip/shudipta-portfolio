@@ -1,0 +1,32 @@
+﻿detected_type,duration_seconds,height,optimized,optimized_bytes,optimized_height,optimized_width,poster,savings_percent,source,source_audio_codec,source_bytes,source_video_codec,status,width
+video/mp4,20.67,1920,public/media/1-aware-business-owner.mp4,1172563,,,public/media/1-aware-business-owner-poster.webp,95.3,1. Aware - Business Owner,aac,24987676,h264,ok,1080
+video/mp4,12.4,1920,public/media/1-aware-students.mp4,3189020,,,public/media/1-aware-students-poster.webp,76.8,1. Aware - Students,aac,13756318,h264,ok,1080
+image/png,,788,public/media/1-3-aware-static-all.webp,38378,788,940,,66.3,1.3 Aware Static - All.png,,113929,,ok,940
+video/mp4,9.43,656,public/media/2-a-engage.mp4,460091,,,public/media/2-a-engage-poster.webp,56.7,2.a Engage,aac,1062885,h264,ok,368
+image/png,,1920,public/media/2-b-engage.webp,372460,1920,1920,,93.6,2.b Engage,,5803679,,ok,1920
+image/gif,6.1,1920,public/media/3-subcribe-alt.mp4,105066,,,public/media/3-subcribe-alt-poster.webp,96.1,3. Subcribe Alt.gif,,2662102,gif,ok,736
+video/mp4,6.04,1920,public/media/3-subcribe.mp4,123402,,,public/media/3-subcribe-poster.webp,97.6,3. Subcribe.mp4,aac,5081805,h264,ok,736
+video/mp4,19.13,1920,public/media/3-subscribe-students.mp4,2492386,,,public/media/3-subscribe-students-poster.webp,86.4,3. Subscribe - Students,aac,18366840,h264,ok,1080
+image/png,,1350,public/media/4-purchase-all.webp,95878,1350,1080,,94.2,4. Purchase - All,,1659074,,ok,1080
+image/png,,1350,public/media/4-purchase-business-owner.webp,102062,1350,1080,,93.6,4. Purchase - Business Owner,,1586719,,ok,1080
+video/mp4,20.1,1080,public/media/4-purchase-s-f.mp4,1553902,,,public/media/4-purchase-s-f-poster.webp,92.9,4. Purchase - S+F,aac,21971254,h264,ok,1920
+video/mp4,24.94,1920,public/media/4-b-purchase.mp4,5509681,,,public/media/4-b-purchase-poster.webp,81.7,4.b Purchase,aac,30122882,h264,ok,1080
+video/mp4,3.04,960,public/media/4-c-purchase.mp4,342978,,,public/media/4-c-purchase-poster.webp,88.6,4.c Purchase,aac,3006710,h264,ok,720
+image/png,,1920,public/media/4-d-purchase-1.webp,149018,1920,1920,,95.5,4.d Purchase (1).png,,3325968,,ok,1920
+video/mp4,30.77,1920,public/media/6-expand-mkt-agency.mp4,3030467,,,public/media/6-expand-mkt-agency-poster.webp,91.1,6. Expand - Mkt Agency,aac,33865765,h264,ok,1080
+video/mp4,43.87,1920,public/media/6-a-expand.mp4,4465380,,,public/media/6-a-expand-poster.webp,91.6,6.a Expand,aac,53350046,h264,ok,1080
+video/mp4,10.37,1920,public/media/6-c-expand.mp4,479716,,,public/media/6-c-expand-poster.webp,95.0,6.c Expand,aac,9681327,h264,ok,1080
+video/mp4,89.12,720,public/media/asset-18.mp4,13034603,,,public/media/asset-18-poster.webp,27.1,AQOHFRn389BHvQxynwDYaKR2q-gJqagkSumkoyjtySC57kwP44lcRxYg8qUOWeYuIXKPrU2JqyeDYMUgElTiqnFhW2zEIGWyew11nYEFMjtwLw.mp4,aac,17870241,h264,ok,1280
+image/png,,788,public/media/bida-post-1.webp,57230,788,940,,93.8,BIDA Post 1.png,,916564,,ok,940
+image/png,,1350,public/media/bida-post-2.webp,105506,1350,1080,,91.8,BIDA Post 2.png,,1291617,,ok,1080
+image/jpeg,,1440,public/media/bida-print.webp,309428,1440,1080,,13.8,BIDA Print.jpg,,359028,,ok,1080
+video/mp4,54.34,1080,public/media/grand-final-adm-5.mp4,6976519,,,public/media/grand-final-adm-5-poster.webp,87.0,Grand Final ADM 5.mp4,aac,53845298,hevc,ok,1920
+image/png,,1500,public/media/invitation-turkiye.webp,159310,1371,1920,,84.7,Invitation Turkiye.png,,1043958,,ok,2100
+video/mp4,16.73,1920,public/media/ld-1.mp4,1935734,,,public/media/ld-1-poster.webp,90.2,LD 1,aac,19773438,h264,ok,1080
+image/png,,5000,public/media/ld-2.webp,217190,1920,1920,,99.1,LD 2,,23942859,,ok,5000
+video/mp4,173.55,1440,public/media/speech-reel-for-turkiye.mp4,25561830,,,public/media/speech-reel-for-turkiye-poster.webp,91.9,Speech Reel for Turkiye.mp4,aac,315258481,h264,ok,1080
+video/webm,25.96,678,public/media/trade-cookies-for-chips-love-doughs.mp4,555057,,,public/media/trade-cookies-for-chips-love-doughs-poster.webp,81.0,Trade Cookies for Chips _ Love Doughs.webm,opus,2924841,vp9,ok,1366
+unknown,,,,,,,,,Untitled,,,,skipped,
+video/mp4,64.02,850,public/media/whatsapp-video-2026-02-02-at-12-54-03-pm.mp4,2107368,,,public/media/whatsapp-video-2026-02-02-at-12-54-03-pm-poster.webp,83.8,WhatsApp Video 2026-02-02 at 12.54.03 PM.mp4,aac,13035981,h264,ok,478
+video/mp4,39.98,478,public/media/whatsapp-video-2026-06-24-at-11-46-52-am.mp4,1887195,,,public/media/whatsapp-video-2026-06-24-at-11-46-52-am-poster.webp,77.0,WhatsApp Video 2026-06-24 at 11.46.52 AM.mp4,aac,8204135,h264,ok,848
+video/mp4,153.45,720,public/media/the-business-standard.mp4,17357229,,,public/media/the-business-standard-poster.webp,44.6,নারায়ণগঞ্জে তরুণ-তরুণীদের হাতে কার্ডস্টকের রাজ্য _ The Business Standard.mp4,aac,31345991,h264,ok,1280

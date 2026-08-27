@@ -33,7 +33,7 @@ Named tokens in `:root` and `@theme`:
 | --- | --- | --- |
 | `--sky` | `#5ec8f0` | Sky, chips, highlights |
 | `--sky-deep` | `#1e8fc2` | Links, eyebrows, gel edge |
-| `--aqua` / `--water` | `#2ad4c9` / `#48cae4` | Water orbs, secondary gloss |
+| `--aqua` / `--water` | `#2ad4c9` / `#48cae4` | Water, icon lenses, secondary gloss |
 | `--lime` | `#a8e063` | Grass, lime gel |
 | `--meadow` | `#7ed957` | Horizon, lime-gel edge |
 | `--deep` / foreground | `#0d3b4a` | Text |
@@ -41,14 +41,14 @@ Named tokens in `:root` and `@theme`:
 | `--secondary` | `#c8f07a` | Lime gel |
 | Frost fill | `rgb(255 255 255 / 0.58)` | Cards, nav, panels |
 
-Background is a **sky-to-meadow** wash (`.sky-meadow`), not a flat page color: cyan sky, white horizon haze, lime grass. A pale sun, drifting cloud ellipses, and CSS hills sit in `AeroScene`.
+Background is a **sky-to-meadow** wash (`.sky-meadow`), not a flat page color: cyan sky, white horizon haze, lime grass. A pale sun, two drifting cloud ellipses, a dew-covered CSS leaf, hills, and water ripples sit in `AeroScene`. Decorative bubbles are intentionally absent.
 
 Forbidden: violet, magenta, near-black glass, neon purple gradients.
 
 ## Spacing
 
 - Page column: `max-w-6xl`, gutter `px-4` / `sm:px-6`
-- Section padding: `py-10` board, `pt-10 lg:pt-16` hero
+- Section padding: `pt-10 sm:pt-14` board; identity is folded into the board instead of a separate hero
 - Card inner: `--card-spacing` = `1rem` (16px)
 - Chip gap: `1.5` (6px)
 - Masonry column gap: `1rem`
@@ -62,7 +62,8 @@ Aero is pill-first.
 
 | Surface | Radius |
 | --- | --- |
-| Buttons, chips, filters, icon buttons | `9999px` (`rounded-full`) |
+| Buttons and chips | `9999px` (`rounded-full`) |
+| Filter shortcuts and icon lenses | `1rem`–`1.4rem` |
 | Cards / dialogs / frost panels | `1.75rem`–`2rem` |
 | Nav bar | `rounded-full` |
 | Orbs | `999px` |
@@ -83,7 +84,8 @@ Cards lift on hover (`-translate-y-1` + deeper frost shadow). No harsh black mat
 
 - **Gel buttons** (`.gel-surface`, `.gel-lime`): vertical aqua/lime gradient, specular `::before` band, inner highlight, outer glow.
 - **Frost glass** (`.glass-panel`): white translucent fill, `blur(22px)` + `saturate(1.65)`, white border.
-- **Orbs** (`.orb`): radial specular at ~32% 28%, underside occlude, colored core. Never flat circles.
+- **App icons** (`.aero-app-icon`, `.aero-icon-lens`): rounded-square Vista lenses with a white specular cap and colored depth.
+- **Filter shortcuts** (`.aero-shortcut`): five differently colored desktop-style tiles rather than a row of identical pills.
 - **Caustics**: faint screen-blended spots over covers and the sky.
 
 ## Lucide
@@ -93,9 +95,8 @@ Library: `lucide-react`. Default stroke **2**. Sizes:
 | Context | Size |
 | --- | --- |
 | Contribution chips | `14px` (`size-3.5`) |
-| Filter pills / buttons | `16px` (`size-4`) |
+| Filter shortcut icons | `20px` (`size-5`) |
 | Nav icon buttons | `16px` |
-| Hero CTAs | `20px` from `lg` button |
 
 Rules:
 
@@ -124,7 +125,7 @@ New project UI should compose these primitives (`Button`, `Badge`, `Card`) rathe
 
 ## Motion
 
-Orbs float (`7s` / `11s` ease-in-out). Clouds drift. Keep it slow. No springy SaaS micro-interactions on every card.
+Only clouds drift. Shortcut tiles lift 2px when selected. Keep motion restrained; no floating bubble field and no springy SaaS micro-interactions on every card.
 
 ## Content types
 

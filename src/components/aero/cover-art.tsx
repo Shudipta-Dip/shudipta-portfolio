@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import type { Accent, CoverShape } from "../../../content/projects";
-import { GlossyOrb } from "@/components/aero/scene";
+import { categoryIcons } from "@/lib/icons";
+import type { Accent, Category, CoverShape } from "../../../content/projects";
 
 const shapeClass: Record<CoverShape, string> = {
   landscape: "aspect-[16/10] min-h-[11rem]",
@@ -18,13 +18,17 @@ const washes: Record<Accent, string> = {
 
 export function CoverArt({
   accent,
+  category,
   shape,
   className,
 }: {
   accent: Accent;
+  category: Category;
   shape: CoverShape;
   className?: string;
 }) {
+  const Icon = categoryIcons[category];
+
   return (
     <div
       className={cn(
@@ -35,19 +39,13 @@ export function CoverArt({
       )}
     >
       <div className="caustics absolute inset-0 opacity-50" />
-      <GlossyOrb
-        className="absolute -top-6 -right-4 size-28 opacity-90"
-        accent={accent}
-      />
-      <GlossyOrb
-        className="absolute bottom-4 left-5 size-14 [animation-delay:1.2s]"
-        accent={accent === "lime" || accent === "meadow" ? "cyan" : "lime"}
-      />
-      <GlossyOrb
-        className="absolute top-1/2 right-1/3 size-8 opacity-70 [animation-delay:0.4s]"
-        accent="aqua"
-      />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/15 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[42%] bg-[linear-gradient(180deg,transparent,rgba(0,74,116,0.26))]" />
+      <div className="absolute -right-10 -bottom-6 h-28 w-[120%] rotate-[-5deg] rounded-[50%] border-t border-white/50 bg-white/15 backdrop-blur-sm" />
+      <div className="aero-app-icon absolute top-1/2 left-1/2 flex size-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center sm:size-28">
+        <Icon className="size-11 text-white drop-shadow-[0_3px_5px_rgba(0,69,105,0.35)] sm:size-13" strokeWidth={1.6} />
+      </div>
+      <div className="absolute top-5 left-5 h-1.5 w-16 rounded-full bg-white/55 blur-[1px]" />
+      <div className="absolute top-9 left-5 h-1 w-9 rounded-full bg-white/35" />
     </div>
   );
 }

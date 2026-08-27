@@ -1,18 +1,12 @@
-import { AboutBand, Hero } from "@/components/portfolio/hero";
+import { AboutBand } from "@/components/portfolio/about-band";
 import { PortfolioBoard } from "@/components/portfolio/board";
-import { getProjectsWithMedia, getSiteMedia } from "@/lib/portfolio";
-
-export const dynamic = "force-dynamic";
+import { getProjectsWithMedia } from "@/lib/portfolio";
 
 export default async function Home() {
-  const [projects, siteMedia] = await Promise.all([
-    getProjectsWithMedia(),
-    getSiteMedia(),
-  ]);
+  const projects = await getProjectsWithMedia();
 
   return (
     <>
-      <Hero portrait={siteMedia.portrait} />
       <PortfolioBoard projects={projects} />
       <AboutBand />
     </>

@@ -1,0 +1,11 @@
+# Original working media is intentionally excluded.
+content/drop/**
+!content/drop/README.md
+
+# Local-only conversion environment and caches.
+.media-tools/
+**/__pycache__/
+*.pyc
+
+# Local screenshots and editor metadata.
+.cursor/

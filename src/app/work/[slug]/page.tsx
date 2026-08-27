@@ -8,10 +8,14 @@ import { ContributionRow } from "@/components/portfolio/contribution-chip";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { categoryMeta } from "../../../../content/projects";
-import { getProjectBySlug, getRelatedProjects } from "@/lib/portfolio";
+import { getProjectBySlug, getRelatedProjects, projects } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return projects.map((project) => ({ slug: project.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -61,6 +65,7 @@ export default async function ProjectPage({
         ) : (
           <CoverArt
             accent={project.accent}
+            category={project.categories[0]}
             shape="landscape"
             className="min-h-[18rem] rounded-none"
           />

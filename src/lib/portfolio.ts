@@ -1,5 +1,5 @@
 import { projects, type Category, type Project } from "../../content/projects";
-import { getProfileMedia, getProjectMedia, type DropFile, type ProjectMedia } from "./drop";
+import { getProjectMedia, type ProjectMedia } from "./drop";
 
 export type ProjectWithMedia = Project & {
   media: ProjectMedia;
@@ -39,10 +39,6 @@ export function getRelatedProjects(project: Project, limit = 3) {
 export function filterProjects(items: ProjectWithMedia[], category: Category | "all") {
   if (category === "all") return items;
   return items.filter((item) => item.categories.includes(category));
-}
-
-export async function getSiteMedia(): Promise<{ portrait?: DropFile }> {
-  return { portrait: await getProfileMedia() };
 }
 
 export { projects };

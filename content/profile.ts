@@ -13,6 +13,6 @@ export const profile = {
   links: {
     linkedin: "https://www.linkedin.com/in/shdip009",
     github: "https://github.com/Shudipta-Dip",
-    email: "shudiptob49@gmail.com",
+    email: "shudiptadip@gmail.com",
   },
 } as const;

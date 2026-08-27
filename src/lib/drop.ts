@@ -5,7 +5,6 @@ const DROP_DIR = path.join(process.cwd(), "content", "drop");
 
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 const VIDEO_EXT = new Set([".mp4", ".webm", ".mov", ".m4v"]);
-const PROFILE_STEMS = new Set(["profile", "avatar", "me", "portrait"]);
 
 export type DropFile = {
   url: string;
@@ -19,10 +18,6 @@ export type ProjectMedia = {
   gallery: DropFile[];
   videos: DropFile[];
 };
-
-function isSafeSegment(segment: string) {
-  return segment.length > 0 && segment !== "." && segment !== ".." && !segment.includes("\\");
-}
 
 function toUrl(relativePath: string) {
   const encoded = relativePath
@@ -76,17 +71,6 @@ function rankCover(file: DropFile, slug: string) {
   return 10;
 }
 
-export async function getProfileMedia(): Promise<DropFile | undefined> {
-  const entries = await listDropEntries();
-  for (const entry of entries) {
-    if (!entry.isFile()) continue;
-    const file = dropFileFrom(entry.name, entry.name);
-    if (!file || file.kind !== "image") continue;
-    if (PROFILE_STEMS.has(stem(entry.name))) return file;
-  }
-  return undefined;
-}
-
 export async function getProjectMedia(slug: string): Promise<ProjectMedia> {
   const entries = await listDropEntries();
   const collected: DropFile[] = [];
@@ -121,48 +105,4 @@ export async function getProjectMedia(slug: string): Promise<ProjectMedia> {
   const gallery = images.filter((file) => file !== cover);
 
   return { cover, gallery, videos };
-}
-
-export async function resolveDropFile(parts: string[]) {
-  if (parts.length === 0 || parts.length > 4) return null;
-  if (!parts.every(isSafeSegment)) return null;
-  if (parts.some((part) => part.startsWith("."))) return null;
-
-  const absolute = path.join(DROP_DIR, ...parts);
-  const resolved = path.resolve(absolute);
-  const root = path.resolve(DROP_DIR);
-  if (resolved !== root && !resolved.startsWith(root + path.sep)) return null;
-  if (!(await fileExists(resolved))) return null;
-
-  const stat = await fs.stat(resolved);
-  if (!stat.isFile()) return null;
-
-  return resolved;
-}
-
-export function contentTypeFor(filePath: string) {
-  const ext = path.extname(filePath).toLowerCase();
-  switch (ext) {
-    case ".jpg":
-    case ".jpeg":
-      return "image/jpeg";
-    case ".png":
-      return "image/png";
-    case ".webp":
-      return "image/webp";
-    case ".gif":
-      return "image/gif";
-    case ".avif":
-      return "image/avif";
-    case ".mp4":
-      return "video/mp4";
-    case ".webm":
-      return "video/webm";
-    case ".mov":
-      return "video/quicktime";
-    case ".m4v":
-      return "video/x-m4v";
-    default:
-      return "application/octet-stream";
-  }
 }

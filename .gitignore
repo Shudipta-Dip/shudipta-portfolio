@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+/.media-tools
+__pycache__/
+*.py[cod]
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +22,10 @@
 
 # production
 /build
+
+# local source media (optimized deployment copies live in /public/media)
+/content/drop/*
+!/content/drop/README.md
 
 # misc
 .DS_Store

@@ -20,22 +20,48 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm start` | Serve the production build |
 | `npm run lint` | ESLint |
 
-The homepage and project pages are `force-dynamic` so files you dump into `content/drop/` show up on refresh.
+## Deploy to Vercel
+
+No environment variables are required. Vercel should auto-detect Next.js and use `npm run build`.
+
+```powershell
+npx vercel@latest --archive=tgz
+npx vercel@latest --prod --archive=tgz
+```
+
+The first command creates a preview deployment; the second promotes a production deployment. The archive flag keeps the media-heavy upload reliable. Original files in `content/drop/` are excluded by both `.gitignore` and `.vercelignore`; only the compressed files in `public/media/` deploy.
 
 ## Drop media
 
-Put stills and cuts in [`content/drop/`](./content/drop/). Naming rules live in that folder's README.
-
-- `profile.jpg` (or `avatar`, `me`, `portrait`) becomes the hero photo
-- `bida-matchmaking.jpg` becomes that project's cover
-- Extra files (`bida-matchmaking-2.png`, `bida-matchmaking.mp4`, or a `bida-matchmaking/` subfolder) land on the full-view page
-
-Until you drop files, each card uses a glossy CSS cover so the board is not a grid of broken images.
+Put source stills and cuts in [`content/drop/`](./content/drop/), then run the optimizer and classify the generated rows in the portfolio intake table. Until that table is applied, cards use glossy CSS covers.
 
 Project copy and contribution chips live in [`content/projects.ts`](./content/projects.ts). Bio and links live in [`content/profile.ts`](./content/profile.ts).
+
+### Optimize a new drop
+
+The original media is preserved locally and excluded from Git/Vercel. Browser-ready H.264 MP4s, WebP images, and video poster frames are written to `public/media/`; size/codec manifests stay in `content/`.
+
+```powershell
+python -m venv .media-tools
+.\.media-tools\Scripts\python.exe -m pip install pillow imageio-ffmpeg
+.\.media-tools\Scripts\python.exe scripts\optimize-media.py
+```
+
+Pass `--force` after changing compression settings to regenerate existing outputs.
+
+## Portfolio intake table
+
+Fill in [`content/portfolio-intake.csv`](./content/portfolio-intake.csv) after adding media to `content/drop/`. The optimizer seeds one row per optimized asset and keeps the original filename beside it. Repeat a project slug when several files belong to the same project.
+
+- `source_file`, `file_path`, `poster_path`, and `media_type` are generated; leave them unchanged
+- `content_types`: separate with `|`; allowed values are `design`, `reels`, `product`, `data`
+- `contribution_chips`: separate with `|`; allowed values are `ux`, `visual`, `copy`, `strategy`, `video`, `edit`, `ads`, `print`, `product`, `code`, `ml`, `dashboard`, `research`, `seo`, `gtm`
+- `publish`: use `yes` or `no`
+
+Once the table is complete, it can be used to replace the starter project copy and map each dropped file into the portfolio.
 
 ## Layout
 
 - `/` — Pinterest-style masonry board with Design / Reels / Product / Data filters
 - `/work/[slug]` — full view: writeup, chips, dropped media, adjacent work
-- `/media/...` — serves files from `content/drop/`
+- `/media/...` — CDN-cacheable optimized files from `public/media/`

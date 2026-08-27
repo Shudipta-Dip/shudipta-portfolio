@@ -1,40 +1,25 @@
 # Media drop
 
-Dump stills, cuts, and a portrait here. Refresh the site. No import step.
+Dump source stills and cuts here. These originals stay local and are excluded from Git and Vercel.
 
-Served at `/media/<filename>` (and `/media/<folder>/<filename>`).
+Run the optimizer from the repository root:
 
-## Portrait
-
-Any one of these, first match wins:
-
-- `profile.jpg` / `.png` / `.webp` / …
-- `avatar.*`
-- `me.*`
-- `portrait.*`
-
-## Project files
-
-Use the project **slug** from `content/projects.ts`.
-
-```
-bida-matchmaking.jpg          → cover
-bida-matchmaking-cover.png    → cover (preferred)
-bida-matchmaking-2.jpg        → gallery on the full-view page
-bida-matchmaking.mp4          → reel / extra
-bida-matchmaking/cover.webp   → cover (folder form)
-bida-matchmaking/edit.mov     → extra
+```powershell
+.\.media-tools\Scripts\python.exe scripts\optimize-media.py
 ```
 
-A file belongs to a project if:
+The script detects files even when their extensions are missing, then writes:
 
-- the filename is `slug` or starts with `slug-`, or
-- it sits in a folder named `slug`
+- H.264/AAC MP4 videos to `public/media/`
+- WebP still images to `public/media/`
+- WebP poster frames for every video
+- analysis manifests to `content/media-manifest.json` and `.csv`
+- one editable row per asset in `content/portfolio-intake.csv`
+
+Complete the blank intake columns to assign each file to a project.
 
 Images: `.jpg` `.jpeg` `.png` `.webp` `.gif` `.avif`  
 Video: `.mp4` `.webm` `.mov` `.m4v`
-
-Covers prefer `cover` in the name, then `slug`, then `slug-1`.
 
 ## Current slugs
 
@@ -53,4 +38,4 @@ Covers prefer `cover` in the name, then `slug`, then `slug-1`.
 - `lead-generator-mvp`
 - `avatar-box-office`
 
-Until a file exists, the board paints a glossy CSS cover so empty drops still look intentional.
+Until the intake table is applied, the board paints glossy CSS covers so the site remains deployable.
