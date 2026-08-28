@@ -1,3 +1,5 @@
+import { FloatingGlyphs } from "@/components/aero/floating-glyphs";
+
 export function AeroScene() {
   return (
     <div className="sky-meadow pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -13,9 +15,9 @@ export function AeroScene() {
       </div>
       <div className="animate-drift absolute top-[12%] left-[10%] h-14 w-40 rounded-full bg-white/40 blur-md" />
       <div className="animate-drift absolute top-[9%] right-[30%] h-12 w-36 rounded-full bg-white/35 blur-md [animation-delay:2.2s]" />
-      <div className="aero-leaf absolute -top-7 -left-8 h-32 w-52 -rotate-12" />
       <div className="water-pool absolute inset-x-0 bottom-0 h-[34vh] opacity-90" />
       <div className="water-ripples absolute inset-x-0 bottom-0 h-[22vh] opacity-60" />
+      <FloatingGlyphs />
     </div>
   );
 }

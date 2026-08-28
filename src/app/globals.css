@@ -263,30 +263,30 @@
     mask-image: linear-gradient(to bottom, transparent, black 38%);
   }
 
-  .aero-leaf {
-    border-radius: 100% 0 100% 0;
-    background:
-      radial-gradient(circle at 30% 35%, rgb(255 255 255 / 0.95) 0 3px, transparent 4px),
-      radial-gradient(circle at 62% 62%, rgb(255 255 255 / 0.72) 0 5px, transparent 6px),
-      linear-gradient(145deg, #d7ff79 0%, #68ce2e 42%, #18872e 100%);
-    box-shadow:
-      inset 8px 8px 14px rgb(255 255 255 / 0.45),
-      inset -10px -8px 18px rgb(10 92 35 / 0.35),
-      0 12px 24px rgb(10 90 60 / 0.22);
-    opacity: 0.88;
+  .aero-floating-glyphs {
+    z-index: 5;
   }
 
-  .aero-leaf::after {
-    content: "";
-    position: absolute;
-    width: 72%;
-    height: 2px;
-    top: 58%;
-    left: 16%;
-    rotate: -25deg;
-    border-radius: 999px;
-    background: rgb(235 255 200 / 0.7);
-    box-shadow: 0 1px 2px rgb(10 90 35 / 0.35);
+  .aero-floating-glyph {
+    transform-origin: center;
+    overflow: visible;
+  }
+
+  .aero-floating-glyph-inner {
+    animation-name: aero-glyph-float;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .aero-floating-glyph-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    transform: scale(1.12);
+    transform-origin: center;
+    user-select: none;
   }
 
   .glass-panel {
@@ -718,6 +718,17 @@
   50% {
     transform: translate(6px, -4px) scale(1.08);
     opacity: 0.65;
+  }
+}
+
+@keyframes aero-glyph-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -12px, 0);
   }
 }
 
