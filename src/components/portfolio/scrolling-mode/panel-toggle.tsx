@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export type PanelState = "default" | "expanded" | "fullscreen";
 
 const glassControlClass =
-  "reels-glass-control flex size-11 items-center justify-center rounded-full text-white transition-[transform,box-shadow] duration-200 active:scale-95 md:size-12 lg:size-14";
+  "reels-glass-control flex size-11 touch-manipulation items-center justify-center rounded-full text-white transition-[transform,box-shadow] duration-200 active:scale-95 md:size-12 lg:size-14";
 
 type PanelToggleProps = {
   state: PanelState;

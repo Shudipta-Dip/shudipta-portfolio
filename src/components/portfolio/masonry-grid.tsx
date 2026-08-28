@@ -30,7 +30,10 @@ function pairMateSlug(slug: string) {
 
 function estimateCardHeight(project: ProjectWithMedia, columnWidth: number) {
   const cover = project.media.cover;
-  if (!cover?.width || !cover.height) return 280;
+  if (!cover?.width || !cover.height) {
+    if (project.isEmbed) return (columnWidth * 10) / 16 + CARD_META_HEIGHT;
+    return 280;
+  }
   return (cover.height / cover.width) * columnWidth + CARD_META_HEIGHT;
 }
 

@@ -1,7 +1,8 @@
-import { CodeXml, Globe, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
+import { GithubIcon, LinkedinIcon } from "@/lib/brand-icons";
 import { cn } from "@/lib/utils";
 import { profile } from "../../../content/profile";
 
@@ -23,7 +24,7 @@ export function SiteHeader() {
             rel="noreferrer"
             className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "nav-gem nav-gem-blue")}
           >
-            <Globe />
+            <LinkedinIcon strokeWidth={1.8} />
             <span className="hidden sm:inline">LinkedIn</span>
             <span className="sr-only sm:hidden">LinkedIn</span>
           </a>
@@ -33,7 +34,7 @@ export function SiteHeader() {
             rel="noreferrer"
             className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "nav-gem nav-gem-deep")}
           >
-            <CodeXml />
+            <GithubIcon strokeWidth={1.8} />
             <span className="hidden sm:inline">GitHub</span>
             <span className="sr-only sm:hidden">GitHub</span>
           </a>

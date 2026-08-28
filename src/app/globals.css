@@ -842,6 +842,15 @@
     z-index: 1;
   }
 
+  @media (pointer: coarse) {
+    .reels-glass-control {
+      /* Avoid Safari's intermittent hit-testing bugs on composited glass. */
+      background: rgb(13 59 74 / 0.78);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+  }
+
   .scrolling-mode-ripple {
     border: 2px solid rgb(255 255 255 / 0.62);
     box-shadow:

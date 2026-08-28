@@ -44,7 +44,53 @@ function sortWithPinnedLead(projects: ProjectWithMedia[]) {
   }
 
   const rest = projects.filter((project) => !used.has(project.slug));
-  return reorderBoardProjects([...pinned, ...rest]);
+  return reorderBoardProjects([...pinned, ...scatterProductDataProjects(rest)]);
+}
+
+function hashSlug(slug: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < slug.length; index += 1) {
+    hash ^= slug.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function shouldScatterOnBoard(project: ProjectWithMedia) {
+  const hasProductOrData =
+    project.categories.includes("product") || project.categories.includes("data");
+  if (!hasProductOrData) return false;
+
+  const hasDesignOrReels =
+    project.categories.includes("design") || project.categories.includes("reels");
+  if (hasDesignOrReels && !project.isEmbed) return false;
+
+  return true;
+}
+
+function scatterProductDataProjects(projects: ProjectWithMedia[]) {
+  const scatter: ProjectWithMedia[] = [];
+  const anchors: ProjectWithMedia[] = [];
+
+  for (const project of projects) {
+    if (shouldScatterOnBoard(project)) scatter.push(project);
+    else anchors.push(project);
+  }
+
+  if (!scatter.length || !anchors.length) return projects;
+
+  const orderedScatter = [...scatter].sort((a, b) => hashSlug(a.slug) - hashSlug(b.slug));
+  const result = [...anchors];
+  const baseStep = result.length / (orderedScatter.length + 1);
+
+  orderedScatter.forEach((project, index) => {
+    const jitter = (hashSlug(project.slug) % 100) / 100;
+    const slot = Math.round((index + 1) * baseStep + jitter * Math.max(1, baseStep * 0.35));
+    const insertAt = Math.min(Math.max(0, slot), result.length);
+    result.splice(insertAt, 0, project);
+  });
+
+  return result;
 }
 
 function placeAdjacent(

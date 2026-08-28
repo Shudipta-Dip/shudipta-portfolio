@@ -152,6 +152,7 @@ export function ScrollingModeSlide({
               src={cover!.url}
               poster={cover!.posterUrl}
               playsInline
+              muted
               loop
               preload={isActive ? "auto" : "metadata"}
               width={cover!.width}

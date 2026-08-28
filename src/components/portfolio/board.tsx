@@ -56,6 +56,10 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
     });
   }, []);
 
+  const openScrollingMode = useCallback(() => {
+    if (scrollingProjects.length) setScrollingModeOpen(true);
+  }, [scrollingProjects.length]);
+
   useEffect(() => {
     const grid = workGridRef.current;
     if (!grid) return;
@@ -84,7 +88,11 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
         return;
       }
 
-      setShowScrollingLauncher(firstRowBottom < 0);
+      // Keep the launcher tappable while iOS momentum scrolling settles. A
+      // small hysteresis gap avoids disabling pointer events mid-tap.
+      setShowScrollingLauncher((isVisible) =>
+        isVisible ? firstRowTop < 48 : firstRowTop < -8,
+      );
     };
 
     updateLauncher();
@@ -111,7 +119,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
       ) : null}
       <ScrollingModeLauncher
         visible={showScrollingLauncher}
-        onOpen={() => setScrollingModeOpen(true)}
+        onOpen={openScrollingMode}
       />
       <section id="work" className="mx-auto max-w-[90rem] px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
         <div className="glass-shell mb-5 overflow-visible rounded-[2rem]">

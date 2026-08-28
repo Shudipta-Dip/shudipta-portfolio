@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, useRef } from "react";
+import { type CSSProperties, type RefObject, useRef } from "react";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -8,54 +8,78 @@ import gsap from "gsap";
 import { cn } from "@/lib/utils";
 
 type LiquidGlassProps = {
-  width?: number;
-  height?: number;
-  borderRadius?: number;
-  tintOpacity?: number;
-  blur?: number;
+  morphTargetRef: RefObject<number>;
+  fullSize?: number;
+  compactSize?: number;
   filterId?: string;
 };
 
+function applyMorphStyles(
+  element: HTMLElement,
+  morph: number,
+  fullSize: number,
+  compactSize: number,
+) {
+  const size = fullSize + (compactSize - fullSize) * morph;
+  element.style.width = `${size}px`;
+  element.style.height = `${size}px`;
+  element.style.setProperty("--lg-border-radius", `${size / 2}px`);
+  element.style.setProperty("--lg-tint-opacity", String(0.12 + (0.1 - 0.12) * morph));
+  element.style.setProperty("--lg-blur", `${3 + (2 - 3) * morph}px`);
+}
+
 export function LiquidGlass({
-  width = 120,
-  height = 120,
-  borderRadius = 12,
-  tintOpacity = 0.1,
-  blur = 2,
+  morphTargetRef,
+  fullSize = 88,
+  compactSize = Math.round(88 / 3),
   filterId = "bubble-glass-distortion",
 }: LiquidGlassProps) {
   const glassRef = useRef<HTMLDivElement>(null);
+  const morphStateRef = useRef({ value: 0 });
 
   useGSAP(() => {
     const glass = glassRef.current;
-    const parent = glass?.parentElement;
+    if (!glass) return;
 
-    if (!glass || !parent) return;
+    gsap.set(glass, { opacity: 0, xPercent: -50, yPercent: -50 });
+    applyMorphStyles(glass, morphStateRef.current.value, fullSize, compactSize);
 
-    gsap.set(glass, { opacity: 0 });
+    const morphTo = gsap.quickTo(morphStateRef.current, "value", {
+      duration: 0.2,
+      ease: "power1.out",
+      onUpdate: () => {
+        if (!glassRef.current) return;
+        applyMorphStyles(
+          glassRef.current,
+          morphStateRef.current.value,
+          fullSize,
+          compactSize,
+        );
+      },
+    });
 
-    const mouseMove = (e: MouseEvent) => {
-      if (!glassRef.current) return;
+    const moveX = gsap.quickTo(glass, "x", { duration: 0.28, ease: "power2.out" });
+    const moveY = gsap.quickTo(glass, "y", { duration: 0.28, ease: "power2.out" });
+    const fadeIn = gsap.to(glass, { opacity: 1, duration: 0.3, ease: "power2.out" });
 
-      const parentRect = parent.getBoundingClientRect();
-      const posX = e.clientX - parentRect.left - width / 2;
-      const posY = e.clientY - parentRect.top - height / 2;
-
-      gsap.to(glassRef.current, {
-        duration: 0.6,
-        left: posX,
-        top: posY,
-        opacity: 1,
-        ease: "power2.out",
-      });
+    const mouseMove = (event: MouseEvent) => {
+      moveX(event.clientX);
+      moveY(event.clientY);
     };
 
-    window.addEventListener("mousemove", mouseMove);
+    const syncMorph = () => {
+      morphTo(morphTargetRef.current ?? 0);
+    };
+
+    gsap.ticker.add(syncMorph);
+    window.addEventListener("mousemove", mouseMove, { passive: true });
 
     return () => {
+      gsap.ticker.remove(syncMorph);
       window.removeEventListener("mousemove", mouseMove);
+      fadeIn.kill();
     };
-  }, [width, height]);
+  }, [compactSize, fullSize, morphTargetRef]);
 
   return (
     <>
@@ -89,18 +113,18 @@ export function LiquidGlass({
       <div
         ref={glassRef}
         className={cn(
-          "absolute isolate z-[1] rounded-(--lg-border-radius) shadow-lg",
+          "absolute isolate z-[1] rounded-(--lg-border-radius) shadow-lg will-change-[transform,width,height]",
           "before:absolute before:inset-0 before:z-0 before:rounded-(--lg-border-radius) before:bg-[rgba(255,255,255,var(--lg-tint-opacity))] before:shadow-[inset_0_0_20px_-5px_rgba(255,255,255,0.7)] before:content-['']",
           "after:absolute after:inset-0 after:isolate after:-z-[1] after:rounded-(--lg-border-radius) after:[filter:var(--lg-filter)] after:backdrop-blur-[var(--lg-blur)] after:content-['']",
         )}
         style={
           {
-            "--lg-border-radius": `${borderRadius}px`,
-            "--lg-tint-opacity": tintOpacity,
-            "--lg-blur": `${blur}px`,
+            "--lg-border-radius": `${fullSize / 2}px`,
+            "--lg-tint-opacity": 0.12,
+            "--lg-blur": "3px",
             "--lg-filter": `url(#${filterId})`,
-            width,
-            height,
+            width: fullSize,
+            height: fullSize,
           } as CSSProperties
         }
       />

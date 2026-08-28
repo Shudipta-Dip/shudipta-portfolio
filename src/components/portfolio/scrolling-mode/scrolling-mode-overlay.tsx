@@ -29,7 +29,7 @@ export function ScrollingModeOverlay({
   const slideRefs = useRef<(HTMLElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [panelStates, setPanelStates] = useState<Record<string, PanelState>>({});
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(false);
 
   const getPanelState = useCallback(
     (slug: string): PanelState => panelStates[slug] ?? "default",
@@ -41,14 +41,42 @@ export function ScrollingModeOverlay({
   }, []);
 
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.body.classList.add("scrolling-mode-active");
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.classList.remove("scrolling-mode-active");
+    if (!scrollableProjects.length) return;
+
+    const scrollY = window.scrollY;
+    const bodyStyle = document.body.style;
+    const htmlStyle = document.documentElement.style;
+    const previousBodyStyles = {
+      position: bodyStyle.position,
+      top: bodyStyle.top,
+      left: bodyStyle.left,
+      right: bodyStyle.right,
+      width: bodyStyle.width,
+      overflow: bodyStyle.overflow,
     };
-  }, []);
+    const previousHtmlOverflow = htmlStyle.overflow;
+
+    htmlStyle.overflow = "hidden";
+    bodyStyle.position = "fixed";
+    bodyStyle.top = `-${scrollY}px`;
+    bodyStyle.left = "0";
+    bodyStyle.right = "0";
+    bodyStyle.width = "100%";
+    bodyStyle.overflow = "hidden";
+    document.body.classList.add("scrolling-mode-active");
+
+    return () => {
+      bodyStyle.position = previousBodyStyles.position;
+      bodyStyle.top = previousBodyStyles.top;
+      bodyStyle.left = previousBodyStyles.left;
+      bodyStyle.right = previousBodyStyles.right;
+      bodyStyle.width = previousBodyStyles.width;
+      bodyStyle.overflow = previousBodyStyles.overflow;
+      htmlStyle.overflow = previousHtmlOverflow;
+      document.body.classList.remove("scrolling-mode-active");
+      window.scrollTo(0, scrollY);
+    };
+  }, [scrollableProjects.length]);
 
   useEffect(() => {
     for (const project of scrollableProjects) {
@@ -96,12 +124,12 @@ export function ScrollingModeOverlay({
   const hasAnyVideo = scrollableProjects.some((project) => project.media.cover?.kind === "video");
 
   return (
-    <div className="fixed inset-0 z-[120] bg-black">
+    <div className="fixed inset-0 z-[120] overflow-hidden bg-black">
       <button
         type="button"
         onClick={onClose}
         aria-label="Back to board"
-        className="reels-glass-control absolute top-4 left-4 z-[130] flex size-11 items-center justify-center rounded-full text-white transition-[transform,box-shadow] duration-200 active:scale-95 md:top-6 md:left-6 md:size-12 lg:size-14"
+        className="reels-glass-control absolute top-[calc(1rem+env(safe-area-inset-top))] left-[calc(1rem+env(safe-area-inset-left))] z-[130] flex size-11 touch-manipulation items-center justify-center rounded-full text-white transition-[transform,box-shadow] duration-200 active:scale-95 md:top-6 md:left-6 md:size-12 lg:size-14"
       >
         <ArrowLeft className="size-5" strokeWidth={2.2} />
       </button>
@@ -112,7 +140,7 @@ export function ScrollingModeOverlay({
           onClick={() => setSoundEnabled((current) => !current)}
           aria-label={soundEnabled ? "Mute videos" : "Unmute videos"}
           aria-pressed={soundEnabled}
-          className="reels-glass-control absolute top-4 right-4 z-[130] flex size-11 items-center justify-center rounded-full text-white transition-[transform,box-shadow] duration-200 active:scale-95 md:top-6 md:right-6 md:size-12 lg:size-14"
+          className="reels-glass-control absolute top-[calc(1rem+env(safe-area-inset-top))] right-[calc(1rem+env(safe-area-inset-right))] z-[130] flex size-11 touch-manipulation items-center justify-center rounded-full text-white transition-[transform,box-shadow] duration-200 active:scale-95 md:top-6 md:right-6 md:size-12 lg:size-14"
         >
           {soundEnabled ? (
             <Volume2 className="size-5" strokeWidth={2.2} />
@@ -124,7 +152,7 @@ export function ScrollingModeOverlay({
 
       <div
         ref={containerRef}
-        className="h-[100dvh] overflow-y-auto overscroll-y-contain snap-y snap-mandatory scroll-smooth"
+        className="h-[100dvh] touch-pan-y overflow-y-auto overscroll-none snap-y snap-mandatory [-webkit-overflow-scrolling:touch]"
       >
         {scrollableProjects.map((project, index) => (
           <div

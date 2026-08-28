@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito, Quicksand } from "next/font/google";
 
 import { AeroScene } from "@/components/aero/scene";
@@ -68,6 +68,13 @@ export const metadata: Metadata = {
     "og:image:height": String(ogImage.height),
     "og:image:type": ogImage.type,
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#2f8ec8",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

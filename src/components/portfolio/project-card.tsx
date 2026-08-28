@@ -2,10 +2,10 @@ import { Expand, Globe, Play } from "lucide-react";
 import Link from "next/link";
 
 import { CoverArt, MediaFrame } from "@/components/aero/cover-art";
+import { BoardEmbedPreview } from "@/components/portfolio/board-embed-preview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ProjectWithMedia } from "@/lib/portfolio";
 import { IntakeChipRow } from "@/components/portfolio/contribution-chip";
-import { ProjectEmbed } from "@/components/portfolio/project-embed";
 
 export function ProjectCard({ project }: { project: ProjectWithMedia }) {
   const cover = project.media.cover;
@@ -16,14 +16,12 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
       <Card className="gap-0 py-0 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(14,90,130,0.22)]">
         <div className="group/cover relative">
           {project.isEmbed && project.embedUrl && !cover ? (
-            <div className="relative aspect-[16/10] overflow-hidden bg-[#0a1620]">
-              <ProjectEmbed
-                url={project.embedUrl}
-                title={project.title}
-                className="pointer-events-none h-full min-h-full scale-[1.02] opacity-95"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#0a1620]/55 via-transparent to-transparent" />
-            </div>
+            <BoardEmbedPreview
+              url={project.embedUrl}
+              title={project.title}
+              accent={project.accent}
+              category={project.categories[0]}
+            />
           ) : cover ? (
             <MediaFrame
               src={cover.url}
