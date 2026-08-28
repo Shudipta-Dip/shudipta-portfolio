@@ -336,6 +336,20 @@
     "optimized_height": 1371
   },
   {
+    "source": "kashef tbs.png",
+    "detected_type": "image/png",
+    "optimized": "public/media/kashef-tbs.webp",
+    "poster": "",
+    "source_bytes": 770422,
+    "optimized_bytes": 73206,
+    "savings_percent": 90.5,
+    "status": "ok",
+    "width": 754,
+    "height": 755,
+    "optimized_width": 754,
+    "optimized_height": 755
+  },
+  {
     "source": "LD 1",
     "detected_type": "video/mp4",
     "optimized": "public/media/ld-1.mp4",
@@ -365,6 +379,35 @@
     "optimized_height": 1920
   },
   {
+    "source": "LTE Case.mp4",
+    "detected_type": "video/mp4",
+    "optimized": "public/media/lte-case.mp4",
+    "poster": "public/media/lte-case-poster.webp",
+    "source_bytes": 25674758,
+    "optimized_bytes": 6463256,
+    "savings_percent": 74.8,
+    "status": "ok",
+    "width": 1920,
+    "height": 1080,
+    "duration_seconds": 107.46,
+    "source_video_codec": "h264",
+    "source_audio_codec": "aac"
+  },
+  {
+    "source": "marina tbs.png",
+    "detected_type": "image/png",
+    "optimized": "public/media/marina-tbs.webp",
+    "poster": "",
+    "source_bytes": 851807,
+    "optimized_bytes": 81270,
+    "savings_percent": 90.5,
+    "status": "ok",
+    "width": 750,
+    "height": 747,
+    "optimized_width": 750,
+    "optimized_height": 747
+  },
+  {
     "source": "Speech Reel for Turkiye.mp4",
     "detected_type": "video/mp4",
     "optimized": "public/media/speech-reel-for-turkiye.mp4",
@@ -376,6 +419,21 @@
     "width": 1080,
     "height": 1440,
     "duration_seconds": 173.55,
+    "source_video_codec": "h264",
+    "source_audio_codec": "aac"
+  },
+  {
+    "source": "TBS Miniature.mp4",
+    "detected_type": "video/mp4",
+    "optimized": "public/media/tbs-miniature.mp4",
+    "poster": "public/media/tbs-miniature-poster.webp",
+    "source_bytes": 6022053,
+    "optimized_bytes": 6022012,
+    "savings_percent": 0.0,
+    "status": "ok",
+    "width": 640,
+    "height": 360,
+    "duration_seconds": 156.53,
     "source_video_codec": "h264",
     "source_audio_codec": "aac"
   },
@@ -393,26 +451,6 @@
     "duration_seconds": 25.96,
     "source_video_codec": "vp9",
     "source_audio_codec": "opus"
-  },
-  {
-    "source": "Untitled",
-    "detected_type": "unknown",
-    "status": "skipped"
-  },
-  {
-    "source": "WhatsApp Video 2026-02-02 at 12.54.03 PM.mp4",
-    "detected_type": "video/mp4",
-    "optimized": "public/media/whatsapp-video-2026-02-02-at-12-54-03-pm.mp4",
-    "poster": "public/media/whatsapp-video-2026-02-02-at-12-54-03-pm-poster.webp",
-    "source_bytes": 13035981,
-    "optimized_bytes": 2107368,
-    "savings_percent": 83.8,
-    "status": "ok",
-    "width": 478,
-    "height": 850,
-    "duration_seconds": 64.02,
-    "source_video_codec": "h264",
-    "source_audio_codec": "aac"
   },
   {
     "source": "WhatsApp Video 2026-06-24 at 11.46.52 AM.mp4",

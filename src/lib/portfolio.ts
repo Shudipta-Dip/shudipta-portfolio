@@ -42,6 +42,7 @@ const categoryAliases: Record<string, Category> = {
   story: "reels",
   banner: "design",
   print: "design",
+  website: "product",
 };
 
 const contributionAliases: Record<string, ContributionId> = {
