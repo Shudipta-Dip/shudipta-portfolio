@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AppWindow,
   ChartColumn,
@@ -14,8 +14,10 @@ import { Button } from "@/components/ui/button";
 import { categoryMeta, type Category } from "../../../content/projects";
 import { profile } from "../../../content/profile";
 import type { ProjectWithMedia } from "@/lib/portfolio";
-import { ProjectCard } from "@/components/portfolio/project-card";
+import { MasonryGrid } from "@/components/portfolio/masonry-grid";
 import { HeroFrutigerCd } from "@/components/aero/hero-frutiger-cd";
+import { ScrollingModeLauncher } from "@/components/portfolio/scrolling-mode/scrolling-mode-launcher";
+import { ScrollingModeOverlay } from "@/components/portfolio/scrolling-mode/scrolling-mode-overlay";
 import { cn } from "@/lib/utils";
 
 const filters: {
@@ -36,15 +38,92 @@ function countForFilter(projects: ProjectWithMedia[], id: "all" | Category) {
   return projects.filter((project) => project.categories.includes(id)).length;
 }
 
+function columnCountForGrid(grid: HTMLElement) {
+  const fromAttr = Number(grid.getAttribute("data-masonry-columns"));
+  if (fromAttr > 0) return fromAttr;
+
+  const columns = grid.querySelectorAll("[data-masonry-column]");
+  return columns.length || 1;
+}
+
+function firstRowCardsInGrid(grid: HTMLElement) {
+  const columnCount = columnCountForGrid(grid);
+  const cards = grid.querySelectorAll<HTMLElement>("[data-work-card]");
+
+  return Array.from(cards).filter((card) => {
+    const index = Number(card.getAttribute("data-work-index"));
+    return !Number.isNaN(index) && index < columnCount;
+  });
+}
+
 export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
   const [active, setActive] = useState<(typeof filters)[number]["id"]>("all");
+  const [scrollingModeOpen, setScrollingModeOpen] = useState(false);
+  const [showScrollingLauncher, setShowScrollingLauncher] = useState(false);
+  const workGridRef = useRef<HTMLDivElement>(null);
 
   const visible = useMemo(() => {
     if (active === "all") return projects;
     return projects.filter((project) => project.categories.includes(active));
   }, [active, projects]);
 
+  useEffect(() => {
+    const grid = workGridRef.current;
+    if (!grid) return;
+
+    const desktop = window.matchMedia("(min-width: 768px)");
+
+    const updateLauncher = () => {
+      if (scrollingModeOpen) {
+        setShowScrollingLauncher(false);
+        return;
+      }
+
+      const firstRow = firstRowCardsInGrid(grid);
+      if (!firstRow.length) {
+        setShowScrollingLauncher(false);
+        return;
+      }
+
+      const viewportHeight = window.innerHeight;
+      const firstRowTop = Math.min(...firstRow.map((card) => card.getBoundingClientRect().top));
+      const firstRowBottom = Math.max(...firstRow.map((card) => card.getBoundingClientRect().bottom));
+
+      if (desktop.matches) {
+        // Require actual scroll so the button never appears on initial load.
+        // Then trigger once the first row starts moving up.
+        const hasScrolled = window.scrollY > 48;
+        setShowScrollingLauncher(hasScrolled && firstRowTop < viewportHeight * 0.72);
+        return;
+      }
+
+      setShowScrollingLauncher(firstRowBottom < 0);
+    };
+
+    updateLauncher();
+    window.addEventListener("scroll", updateLauncher, { passive: true });
+    window.addEventListener("resize", updateLauncher);
+    desktop.addEventListener("change", updateLauncher);
+
+    return () => {
+      window.removeEventListener("scroll", updateLauncher);
+      window.removeEventListener("resize", updateLauncher);
+      desktop.removeEventListener("change", updateLauncher);
+    };
+  }, [scrollingModeOpen, visible.length]);
+
   return (
+    <>
+      {scrollingModeOpen ? (
+        <ScrollingModeOverlay
+          projects={visible}
+          onClose={() => setScrollingModeOpen(false)}
+        />
+      ) : null}
+      <ScrollingModeLauncher
+        visible={showScrollingLauncher}
+        onOpen={() => setScrollingModeOpen(true)}
+      />
     <section id="work" className="mx-auto max-w-[90rem] px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
       <div className="glass-shell mb-5 overflow-visible rounded-[2rem]">
         <div className="flex flex-col gap-4 px-5 py-6 sm:px-7 md:flex-row md:items-center md:justify-between md:gap-8 md:pr-8">
@@ -93,11 +172,8 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
             );
           })}
       </div>
-      <div className="columns-[17rem] gap-4">
-        {visible.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
-        ))}
-      </div>
+      <MasonryGrid projects={visible} gridRef={workGridRef} />
     </section>
+    </>
   );
 }

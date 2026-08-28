@@ -11,7 +11,7 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
   const hasVideo = cover?.kind === "video" || project.media.videos.length > 0;
 
   return (
-    <Link href={`/work/${project.slug}`} className="group mb-4 inline-block w-full break-inside-avoid">
+    <Link href={`/work/${project.slug}`} className="group inline-block w-full">
       <Card className="gap-0 py-0 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(14,90,130,0.22)]">
         <div className="group/cover relative">
           {cover ? (

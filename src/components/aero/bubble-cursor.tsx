@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { LiquidGlass } from "@/components/aero/liquid-glass";
 
 const BUBBLE_SIZE = 88;
+const SCROLLING_MODE_BUBBLE_SIZE = Math.round(BUBBLE_SIZE / 3);
 
 export function BubbleCursor() {
   const [enabled, setEnabled] = useState(false);
+  const [compact, setCompact] = useState(false);
 
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -30,16 +32,30 @@ export function BubbleCursor() {
     };
   }, []);
 
+  useEffect(() => {
+    const syncCompact = () => {
+      setCompact(document.body.classList.contains("scrolling-mode-active"));
+    };
+
+    syncCompact();
+    const observer = new MutationObserver(syncCompact);
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+    return () => observer.disconnect();
+  }, []);
+
   if (!enabled) return null;
+
+  const size = compact ? SCROLLING_MODE_BUBBLE_SIZE : BUBBLE_SIZE;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
       <LiquidGlass
-        width={BUBBLE_SIZE}
-        height={BUBBLE_SIZE}
-        borderRadius={BUBBLE_SIZE / 2}
-        tintOpacity={0.12}
-        blur={3}
+        width={size}
+        height={size}
+        borderRadius={size / 2}
+        tintOpacity={compact ? 0.1 : 0.12}
+        blur={compact ? 2 : 3}
       />
     </div>
   );

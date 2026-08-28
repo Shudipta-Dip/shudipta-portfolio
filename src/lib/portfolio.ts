@@ -14,6 +14,82 @@ export type ProjectWithMedia = Project & {
   displayContributions: string[];
 };
 
+const PINNED_BOARD_LEAD = [
+  { slug: "trend-recreation", title: "Trend Recreation" },
+  { slug: "ncc-bank-hero-ovc", title: "NCC Bank Hero OVC" },
+  { slug: "year-recap", title: "Year Recap" },
+  { slug: "platform-launch", title: "Platform Launch" },
+  { slug: "testimonial-cta", title: "Testimonial CTA" },
+] as const;
+
+function matchesPinnedLead(
+  project: ProjectWithMedia,
+  pinned: (typeof PINNED_BOARD_LEAD)[number],
+) {
+  return project.slug === pinned.slug || project.title === pinned.title;
+}
+
+function sortWithPinnedLead(projects: ProjectWithMedia[]) {
+  const used = new Set<string>();
+  const pinned: ProjectWithMedia[] = [];
+
+  for (const entry of PINNED_BOARD_LEAD) {
+    const match = projects.find((project) => !used.has(project.slug) && matchesPinnedLead(project, entry));
+    if (match) {
+      pinned.push(match);
+      used.add(match.slug);
+    }
+  }
+
+  const rest = projects.filter((project) => !used.has(project.slug));
+  return reorderBoardProjects([...pinned, ...rest]);
+}
+
+function placeAdjacent(
+  projects: ProjectWithMedia[],
+  firstSlug: string,
+  secondSlug: string,
+) {
+  const result = [...projects];
+  const firstIndex = result.findIndex((project) => project.slug === firstSlug);
+  const secondIndex = result.findIndex((project) => project.slug === secondSlug);
+  if (firstIndex === -1 || secondIndex === -1 || secondIndex === firstIndex + 1) return result;
+
+  const [second] = result.splice(secondIndex, 1);
+  const insertAt = secondIndex < firstIndex ? firstIndex : firstIndex + 1;
+  result.splice(insertAt, 0, second);
+  return result;
+}
+
+function avoidStackedFollower(
+  projects: ProjectWithMedia[],
+  anchorSlug: string,
+  followerSlug: string,
+  columns = 4,
+) {
+  const result = [...projects];
+  const anchorIndex = result.findIndex((project) => project.slug === anchorSlug);
+  let followerIndex = result.findIndex((project) => project.slug === followerSlug);
+  if (anchorIndex === -1 || followerIndex === -1 || followerIndex <= anchorIndex) return result;
+
+  while ((followerIndex - anchorIndex) % columns === 0) {
+    const swapIndex = followerIndex - 1;
+    if (swapIndex <= anchorIndex) break;
+    [result[followerIndex], result[swapIndex]] = [result[swapIndex]!, result[followerIndex]!];
+    followerIndex = swapIndex;
+  }
+
+  return result;
+}
+
+function reorderBoardProjects(projects: ProjectWithMedia[]) {
+  let ordered = projects;
+  ordered = placeAdjacent(ordered, "product-bts-coverage", "product-bts-coverage-2");
+  ordered = placeAdjacent(ordered, "infographic-1", "infographic-2");
+  ordered = avoidStackedFollower(ordered, "short-form-repurpose", "commward-winning-campaign");
+  return ordered;
+}
+
 const contributionIds = new Set<ContributionId>([
   "ux",
   "visual",
@@ -249,7 +325,7 @@ export async function getProjectsWithMedia(): Promise<ProjectWithMedia[]> {
     makePreviewProject(rows, index, usedSlugs),
   );
 
-  return [...previewProjects, ...established];
+  return sortWithPinnedLead([...previewProjects, ...established]);
 }
 
 export async function getProjectBySlug(slug: string): Promise<ProjectWithMedia | undefined> {
