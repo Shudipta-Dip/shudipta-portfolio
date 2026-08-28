@@ -28,7 +28,10 @@ function formatTime(seconds: number) {
 }
 
 const panelToggleClass =
-  "absolute right-4 bottom-6 z-[130] mb-0 md:right-5 md:bottom-7 lg:right-6 lg:bottom-8";
+  "absolute right-4 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-[130] mb-0 md:right-5 md:bottom-7 lg:right-6 lg:bottom-8";
+
+const metadataPanelClass =
+  "absolute inset-x-0 bottom-0 z-20 px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pr-[3.75rem] md:pr-[4.5rem] lg:pr-20";
 
 export function ScrollingModeSlide({
   project,
@@ -178,69 +181,69 @@ export function ScrollingModeSlide({
             />
           )}
         </div>
-
-        {showMetadata ? (
-          <>
-            {needsReadabilityFade ? (
-              <div
-                className={cn(
-                  "pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[48%]",
-                  showExpanded ? "reels-readability-fade-expanded" : "reels-readability-fade",
-                )}
-              />
-            ) : (
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-linear-to-t from-black/45 to-transparent" />
-            )}
-
-            <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-6 pr-[3.75rem] md:pr-[4.5rem] lg:pr-20">
-              <div className="min-w-0 space-y-2.5">
-                <h2 className="font-heading text-lg font-semibold tracking-tight text-white drop-shadow-[0_2px_8px_rgb(0_0_0/0.45)]">
-                  {project.title}
-                </h2>
-                {showExpanded ? (
-                  <p className="max-w-[min(100%,20rem)] text-sm leading-relaxed text-white/88 drop-shadow-[0_1px_6px_rgb(0_0_0/0.45)]">
-                    {project.tagline}
-                  </p>
-                ) : null}
-                <IntakeChipRow labels={project.displayContributions} />
-                {showExpanded ? (
-                  <MetaChipRow
-                    contentType={project.displayContentType}
-                    organization={project.org}
-                    year={project.year}
-                  />
-                ) : null}
-                {isVideo ? (
-                  <div className="space-y-1.5 pt-1">
-                    <input
-                      type="range"
-                      min={0}
-                      max={duration || 0}
-                      step={0.05}
-                      value={Math.min(currentTime, duration || 0)}
-                      onChange={(event) => handleSeek(Number(event.target.value))}
-                      aria-label={`Seek ${project.title}`}
-                      className="reels-scrubber w-full"
-                    />
-                    <div className="flex w-full justify-between text-[0.65rem] font-semibold tracking-wide text-white/70 uppercase">
-                      <span>{formatTime(currentTime)}</span>
-                      <span>{formatTime(duration)}</span>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <PanelToggle
-              state={panelState}
-              onAdvance={onPanelAdvance}
-              className={panelToggleClass}
-            />
-          </>
-        ) : (
-          <FullscreenLineToggle onClick={onPanelCollapse} className={panelToggleClass} />
-        )}
       </ReelsContentShell>
+
+      {showMetadata ? (
+        <>
+          {needsReadabilityFade ? (
+            <div
+              className={cn(
+                "pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[48%]",
+                showExpanded ? "reels-readability-fade-expanded" : "reels-readability-fade",
+              )}
+            />
+          ) : (
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-linear-to-t from-black/45 to-transparent" />
+          )}
+
+          <div className={metadataPanelClass}>
+            <div className="min-w-0 space-y-2.5">
+              <h2 className="font-heading text-lg font-semibold tracking-tight text-white drop-shadow-[0_2px_8px_rgb(0_0_0/0.45)]">
+                {project.title}
+              </h2>
+              {showExpanded ? (
+                <p className="max-w-[min(100%,20rem)] text-sm leading-relaxed text-white/88 drop-shadow-[0_1px_6px_rgb(0_0_0/0.45)]">
+                  {project.tagline}
+                </p>
+              ) : null}
+              <IntakeChipRow labels={project.displayContributions} />
+              {showExpanded ? (
+                <MetaChipRow
+                  contentType={project.displayContentType}
+                  organization={project.org}
+                  year={project.year}
+                />
+              ) : null}
+              {isVideo ? (
+                <div className="space-y-1.5 pt-1">
+                  <input
+                    type="range"
+                    min={0}
+                    max={duration || 0}
+                    step={0.05}
+                    value={Math.min(currentTime, duration || 0)}
+                    onChange={(event) => handleSeek(Number(event.target.value))}
+                    aria-label={`Seek ${project.title}`}
+                    className="reels-scrubber w-full"
+                  />
+                  <div className="flex w-full justify-between text-[0.65rem] font-semibold tracking-wide text-white/70 uppercase">
+                    <span>{formatTime(currentTime)}</span>
+                    <span>{formatTime(duration)}</span>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <PanelToggle
+            state={panelState}
+            onAdvance={onPanelAdvance}
+            className={panelToggleClass}
+          />
+        </>
+      ) : (
+        <FullscreenLineToggle onClick={onPanelCollapse} className={panelToggleClass} />
+      )}
     </section>
   );
 }
