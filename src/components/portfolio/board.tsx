@@ -15,6 +15,7 @@ import { categoryMeta, type Category } from "../../../content/projects";
 import { profile } from "../../../content/profile";
 import type { ProjectWithMedia } from "@/lib/portfolio";
 import { ProjectCard } from "@/components/portfolio/project-card";
+import { HeroFrutigerCd } from "@/components/aero/hero-frutiger-cd";
 import { cn } from "@/lib/utils";
 
 const filters: {
@@ -45,9 +46,9 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
 
   return (
     <section id="work" className="mx-auto max-w-[90rem] px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
-      <div className="glass-shell mb-5 overflow-hidden rounded-[2rem]">
-        <div className="px-5 py-6 sm:px-7">
-          <div>
+      <div className="glass-shell mb-5 overflow-visible rounded-[2rem]">
+        <div className="flex flex-col gap-4 px-5 py-6 sm:px-7 md:flex-row md:items-center md:justify-between md:gap-8 md:pr-8">
+          <div className="min-w-0 flex-1">
             <p className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.2em] text-sky-deep uppercase">
               <MapPin className="size-3.5" />
               {profile.location} · Creative + data
@@ -59,6 +60,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
               {profile.headline}
             </p>
           </div>
+          <HeroFrutigerCd className="self-center md:self-auto" />
         </div>
       </div>
       <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
