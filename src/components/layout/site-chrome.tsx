@@ -8,7 +8,7 @@ import { profile } from "../../../content/profile";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
-      <div className="glass-panel mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full px-3 py-2 sm:px-4">
+      <div className="glass-shell mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full px-3 py-2 sm:px-4">
         <Link href="/" className="flex items-center gap-2 pl-1">
           <span className="aero-icon-lens aero-lens-lime flex size-8 shrink-0 items-center justify-center rounded-[0.7rem]">
             <Leaf className="size-4 text-white" strokeWidth={2} />
@@ -17,14 +17,6 @@ export function SiteHeader() {
             {profile.shortName}
           </span>
         </Link>
-        <nav className="hidden items-center gap-1 md:flex">
-          <Link href="/#work" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
-            Work
-          </Link>
-          <Link href="/#about" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
-            About
-          </Link>
-        </nav>
         <div className="flex items-center gap-1.5">
           <a
             href={profile.links.linkedin}

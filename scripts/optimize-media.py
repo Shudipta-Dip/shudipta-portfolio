@@ -246,21 +246,56 @@ def ensure_smaller_video(
     remuxed.replace(optimized)
 
 
+def frame_luminance(image_path: Path) -> float:
+    with Image.open(image_path) as image:
+        grayscale = image.convert("L")
+        return sum(grayscale.getdata()) / max(1, grayscale.size[0] * grayscale.size[1])
+
+
 def make_poster(source: Path, destination: Path, duration: float | None) -> None:
-    seek = min(1.0, max(0.0, (duration or 2.0) * 0.1))
+    total = max(duration or 2.0, 0.5)
+    seeks = sorted(
+        {
+            min(max(1.0, total * ratio), max(0.0, total - 0.5))
+            for ratio in (0.2, 0.3, 0.4, 0.5, 0.6)
+        }
+    )
+
+    best_candidate: Path | None = None
+    best_score = -1.0
+    candidates: list[Path] = []
+
+    for index, seek in enumerate(seeks):
+        candidate = destination.with_suffix(f".candidate-{index}.jpg")
+        run_ffmpeg(
+            [
+                "-ss",
+                f"{seek:.2f}",
+                "-i",
+                str(source),
+                "-frames:v",
+                "1",
+                "-vf",
+                (
+                    f"scale='min({MAX_IMAGE_EDGE},iw)':'min({MAX_IMAGE_EDGE},ih)':"
+                    "force_original_aspect_ratio=decrease"
+                ),
+                str(candidate),
+            ]
+        )
+        candidates.append(candidate)
+        score = frame_luminance(candidate)
+        if score > best_score:
+            best_score = score
+            best_candidate = candidate
+
+    if not best_candidate:
+        raise RuntimeError(f"Could not extract poster frame from {source}")
+
     run_ffmpeg(
         [
-            "-ss",
-            f"{seek:.2f}",
             "-i",
-            str(source),
-            "-frames:v",
-            "1",
-            "-vf",
-            (
-                f"scale='min({MAX_IMAGE_EDGE},iw)':'min({MAX_IMAGE_EDGE},ih)':"
-                "force_original_aspect_ratio=decrease"
-            ),
+            str(best_candidate),
             "-c:v",
             "libwebp",
             "-quality",
@@ -268,6 +303,9 @@ def make_poster(source: Path, destination: Path, duration: float | None) -> None
             str(destination),
         ]
     )
+
+    for candidate in candidates:
+        candidate.unlink(missing_ok=True)
 
 
 def seed_intake_table(manifest: list[dict[str, Any]]) -> bool:

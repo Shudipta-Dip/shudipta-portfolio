@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Nunito, Quicksand } from "next/font/google";
 
 import { AeroScene } from "@/components/aero/scene";
+import { BubbleCursor } from "@/components/aero/bubble-cursor";
+// Shelved: import { LiquidCursor } from "@/components/aero/shelved/liquid-cursor";
 import { SiteHeader } from "@/components/layout/site-chrome";
 import { Providers } from "@/components/providers";
 import { profile } from "../../content/profile";
@@ -34,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <Providers>
+          <BubbleCursor />
           <AeroScene />
           <SiteHeader />
           <main className="flex flex-1 flex-col">{children}</main>

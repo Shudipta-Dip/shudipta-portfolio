@@ -1,7 +1,9 @@
-import { cn } from "@/lib/utils";
-import { categoryIcons } from "@/lib/icons";
-import type { Accent, Category, CoverShape } from "../../../content/projects";
 import Image from "next/image";
+
+import { HoverVideoPreview } from "@/components/portfolio/hover-video-preview";
+import { categoryIcons } from "@/lib/icons";
+import { cn } from "@/lib/utils";
+import type { Accent, Category, CoverShape } from "../../../content/projects";
 
 const shapeClass: Record<CoverShape, string> = {
   landscape: "aspect-[16/10] min-h-[11rem]",
@@ -58,7 +60,9 @@ export function MediaFrame({
   width,
   height,
   posterUrl,
+  duration,
   controls = false,
+  preview = false,
   className,
 }: {
   src: string;
@@ -67,9 +71,24 @@ export function MediaFrame({
   width: number;
   height: number;
   posterUrl?: string;
+  duration?: number;
   controls?: boolean;
+  preview?: boolean;
   className?: string;
 }) {
+  if (kind === "video" && preview && !controls) {
+    return (
+      <HoverVideoPreview
+        src={src}
+        posterUrl={posterUrl}
+        width={width}
+        height={height}
+        duration={duration}
+        className={className}
+      />
+    );
+  }
+
   return (
     <div
       className={cn("relative overflow-hidden", className)}

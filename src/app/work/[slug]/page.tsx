@@ -4,10 +4,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 import { CoverArt, MediaFrame } from "@/components/aero/cover-art";
-import { ContributionRow } from "@/components/portfolio/contribution-chip";
-import { Badge } from "@/components/ui/badge";
+import { IntakeChipRow, MetaChipRow } from "@/components/portfolio/contribution-chip";
 import { buttonVariants } from "@/components/ui/button";
-import { categoryMeta } from "../../../../content/projects";
 import { getProjectBySlug, getProjectsWithMedia, getRelatedProjects } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
@@ -84,27 +82,20 @@ export default async function ProjectPage({
         )}
 
         <div className="space-y-6 px-5 py-8 sm:px-10">
-          <div className="flex flex-wrap gap-1.5">
-            {project.categories.map((category) => (
-              <Badge key={category} variant="outline" className="tracking-[0.14em] uppercase">
-                {categoryMeta[category].label}
-              </Badge>
-            ))}
-            <Badge variant="secondary">{project.year}</Badge>
-          </div>
+          <MetaChipRow
+            contentType={project.displayContentType}
+            organization={project.org}
+            year={project.year}
+          />
           <div>
-            <p className="text-sm font-medium text-sky-deep">{project.org}</p>
-            <h1 className="font-heading mt-1 text-4xl font-semibold tracking-tight sm:text-5xl">
+            <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
               {project.title}
             </h1>
-            <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{project.tagline}</p>
+            {project.tagline ? (
+              <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{project.tagline}</p>
+            ) : null}
           </div>
-          <ContributionRow ids={project.contributions} />
-          <div className="space-y-4 text-base leading-relaxed text-foreground/85">
-            {project.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+          <IntakeChipRow labels={project.displayContributions} />
           {project.links?.length ? (
             <div className="flex flex-wrap gap-2">
               {project.links.map((link) => (
@@ -146,12 +137,7 @@ export default async function ProjectPage({
             ))}
           </div>
         </section>
-      ) : (
-        <p className="mt-6 text-sm text-muted-foreground">
-          Assign media to <code className="font-medium text-foreground">{project.slug}</code> in{" "}
-          <code className="font-medium text-foreground">content/portfolio-intake.csv</code> to show it here.
-        </p>
-      )}
+      ) : null}
 
       {related.length ? (
         <section className="mt-12">

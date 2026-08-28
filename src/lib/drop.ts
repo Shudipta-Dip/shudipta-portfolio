@@ -104,10 +104,11 @@ export async function getIntakeRows(): Promise<IntakeRow[]> {
       .map((item) => [item.optimized!.replaceAll("\\", "/"), item]),
   );
 
-  return records.flatMap((values) => {
+  const rows = records.flatMap((values) => {
     const row = Object.fromEntries(headers.map((header, index) => [header, values[index]?.trim() ?? ""]));
     const filePath = row.file_path;
-    const mediaType = row.media_type === "video" ? "video" : row.media_type === "image" ? "image" : null;
+    const mediaType =
+      row.media_type === "video" ? "video" : row.media_type === "image" ? "image" : null;
     const details = metadata.get(filePath.replaceAll("\\", "/"));
     const width = details?.optimized_width ?? details?.width;
     const height = details?.optimized_height ?? details?.height;
@@ -119,7 +120,7 @@ export async function getIntakeRows(): Promise<IntakeRow[]> {
       sourceFile: row.source_file,
       filePath,
       posterPath: row.poster_path,
-      mediaType,
+      mediaType: mediaType as DropFile["kind"],
       projectSlug: row.project_slug,
       title: row.title,
       contentTypes: row.content_types,
@@ -133,7 +134,7 @@ export async function getIntakeRows(): Promise<IntakeRow[]> {
         url: publicUrl(filePath),
         filename: path.basename(filePath),
         ext: path.extname(filePath).toLowerCase(),
-        kind: mediaType,
+        kind: mediaType as DropFile["kind"],
         width,
         height,
         posterUrl: row.poster_path ? publicUrl(row.poster_path) : undefined,
@@ -141,4 +142,6 @@ export async function getIntakeRows(): Promise<IntakeRow[]> {
       },
     }];
   });
+
+  return rows;
 }

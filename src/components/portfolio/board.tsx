@@ -45,7 +45,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
 
   return (
     <section id="work" className="mx-auto max-w-[90rem] px-4 pt-10 pb-12 sm:px-6 sm:pt-14">
-      <div className="glass-panel mb-5 overflow-hidden rounded-[2rem]">
+      <div className="glass-shell mb-5 overflow-hidden rounded-[2rem]">
         <div className="px-5 py-6 sm:px-7">
           <div>
             <p className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.2em] text-sky-deep uppercase">

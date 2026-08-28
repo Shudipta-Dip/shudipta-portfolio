@@ -10,6 +10,8 @@ import { getIntakeRows, type IntakeRow, type ProjectMedia } from "./drop";
 
 export type ProjectWithMedia = Project & {
   media: ProjectMedia;
+  displayContentType: string;
+  displayContributions: string[];
 };
 
 const contributionIds = new Set<ContributionId>([
@@ -48,12 +50,9 @@ const categoryAliases: Record<string, Category> = {
 const contributionAliases: Record<string, ContributionId> = {
   ux: "ux",
   visual: "visual",
-  design: "visual",
   copy: "copy",
   strategy: "strategy",
-  idea: "strategy",
   video: "video",
-  shoot: "video",
   edit: "edit",
   ads: "ads",
   print: "print",
@@ -70,6 +69,13 @@ function splitPipe(value: string) {
   return value
     .split("|")
     .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function splitPipeVerbatim(value: string) {
+  return value
+    .split("|")
+    .map((item) => item.trim())
     .filter(Boolean);
 }
 
@@ -112,9 +118,16 @@ function categoriesFor(row: IntakeRow): Category[] {
   return selected.length ? [...new Set(selected)] : [row.mediaType === "video" ? "reels" : "design"];
 }
 
+function intakeLabels(row: IntakeRow) {
+  return {
+    displayContentType: row.contentTypes.trim().toUpperCase(),
+    displayContributions: splitPipeVerbatim(row.contributionChips),
+  };
+}
+
 function contributionsFor(row: IntakeRow): ContributionId[] {
   const selected = splitPipe(row.contributionChips)
-    .map((item) => contributionAliases[item])
+    .map((item) => contributionAliases[item] ?? (contributionIds.has(item as ContributionId) ? item : null))
     .filter((item): item is ContributionId => Boolean(item) && contributionIds.has(item));
   return selected.length
     ? [...new Set(selected)]
@@ -154,12 +167,14 @@ function makePreviewProject(
     ? slugify(lead.title)
     : lead.projectSlug || `drop-${slugify(displayTitle(lead.sourceFile))}`;
 
+  const labels = intakeLabels(lead);
+
   return {
     slug: uniqueSlug(baseSlug, usedSlugs),
     title,
     tagline: description,
     summary: description,
-    body: [description],
+    body: [],
     year: lead.year || "Selected work",
     org: lead.organization || "Portfolio media",
     categories: categoriesFor(lead),
@@ -168,12 +183,20 @@ function makePreviewProject(
     coverShape: shapeFor(lead.media.width, lead.media.height),
     accent: accents[index % accents.length],
     media: mediaFor(rows),
+    ...labels,
   };
 }
 
 function applyIntake(project: Project, rows: IntakeRow[]): ProjectWithMedia {
   const lead = rows[0];
-  if (!lead) return { ...project, media: mediaFor([]) };
+  if (!lead) {
+    return {
+      ...project,
+      media: mediaFor([]),
+      displayContentType: "",
+      displayContributions: [],
+    };
+  }
 
   const description = lead.description || project.tagline;
   const intakeCategories = lead.contentTypes ? categoriesFor(lead) : project.categories;
@@ -181,12 +204,14 @@ function applyIntake(project: Project, rows: IntakeRow[]): ProjectWithMedia {
     ? contributionsFor(lead)
     : project.contributions;
 
+  const labels = intakeLabels(lead);
+
   return {
     ...project,
     title: lead.title || project.title,
     tagline: description,
     summary: lead.description || project.summary,
-    body: lead.description ? [lead.description] : project.body,
+    body: [],
     year: lead.year || project.year,
     org: lead.organization || project.org,
     categories: intakeCategories,
@@ -196,6 +221,7 @@ function applyIntake(project: Project, rows: IntakeRow[]): ProjectWithMedia {
       : project.links,
     coverShape: shapeFor(lead.media.width, lead.media.height),
     media: mediaFor(rows),
+    ...labels,
   };
 }
 
