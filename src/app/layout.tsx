@@ -6,6 +6,7 @@ import { BubbleCursor } from "@/components/aero/bubble-cursor";
 // Shelved: import { LiquidCursor } from "@/components/aero/shelved/liquid-cursor";
 import { SiteHeader } from "@/components/layout/site-chrome";
 import { Providers } from "@/components/providers";
+import { getSiteUrl, ogImage, productionSiteUrl } from "@/lib/site";
 import { profile } from "../../content/profile";
 import "./globals.css";
 
@@ -19,35 +20,53 @@ const quicksand = Quicksand({
   variable: "--font-quicksand",
 });
 
-const siteUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+const siteUrl = getSiteUrl();
+const socialTitle = "Portfolio - Shudipta Dip";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Portfolio - Shudipta Dip",
+    default: socialTitle,
     template: "%s · Shudipta Dip",
   },
   description: profile.headline,
+  alternates: {
+    canonical: productionSiteUrl,
+  },
   openGraph: {
-    title: "Portfolio - Shudipta Dip",
+    title: socialTitle,
     description: profile.headline,
+    url: productionSiteUrl,
+    siteName: socialTitle,
     type: "website",
     images: [
       {
-        url: "/preview-og.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Portfolio - Shudipta Dip",
+        url: ogImage.path,
+        secureUrl: ogImage.path,
+        width: ogImage.width,
+        height: ogImage.height,
+        type: ogImage.type,
+        alt: ogImage.alt,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Portfolio - Shudipta Dip",
+    title: socialTitle,
     description: profile.headline,
-    images: ["/preview-og.jpg"],
+    images: [
+      {
+        url: ogImage.path,
+        width: ogImage.width,
+        height: ogImage.height,
+        alt: ogImage.alt,
+      },
+    ],
+  },
+  other: {
+    "og:image:width": String(ogImage.width),
+    "og:image:height": String(ogImage.height),
+    "og:image:type": ogImage.type,
   },
 };
 
