@@ -19,12 +19,36 @@ const quicksand = Quicksand({
   variable: "--font-quicksand",
 });
 
+const siteUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `${profile.name} — ${profile.role}`,
-    template: `%s · ${profile.shortName}`,
+    default: "Portfolio - Shudipta Dip",
+    template: "%s · Shudipta Dip",
   },
   description: profile.headline,
+  openGraph: {
+    title: "Portfolio - Shudipta Dip",
+    description: profile.headline,
+    type: "website",
+    images: [
+      {
+        url: "/preview-og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Portfolio - Shudipta Dip",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Portfolio - Shudipta Dip",
+    description: profile.headline,
+    images: ["/preview-og.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
