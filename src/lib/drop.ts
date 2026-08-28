@@ -25,7 +25,7 @@ export type IntakeRow = {
   sourceFile: string;
   filePath: string;
   posterPath: string;
-  mediaType: DropFile["kind"];
+  mediaType: DropFile["kind"] | "embed";
   projectSlug: string;
   title: string;
   contentTypes: string;
@@ -35,11 +35,14 @@ export type IntakeRow = {
   organization: string;
   externalUrl: string;
   publish: string;
-  media: DropFile;
+  isEmbed: boolean;
+  media: DropFile | null;
 };
 
 type ManifestRow = {
+  source?: string;
   optimized?: string;
+  poster?: string;
   width?: number;
   height?: number;
   optimized_width?: number;
@@ -91,6 +94,32 @@ function publicUrl(filePath: string) {
     .join("/")}`;
 }
 
+function normalizeSource(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function buildDropFile(
+  filePath: string,
+  posterPath: string,
+  mediaType: DropFile["kind"],
+  details?: ManifestRow,
+): DropFile | null {
+  const width = details?.optimized_width ?? details?.width;
+  const height = details?.optimized_height ?? details?.height;
+  if (!width || !height) return null;
+
+  return {
+    url: publicUrl(filePath),
+    filename: path.basename(filePath),
+    ext: path.extname(filePath).toLowerCase(),
+    kind: mediaType,
+    width,
+    height,
+    posterUrl: posterPath ? publicUrl(posterPath) : undefined,
+    duration: details?.duration_seconds,
+  };
+}
+
 export async function getIntakeRows(): Promise<IntakeRow[]> {
   const [intakeSource, manifestSource] = await Promise.all([
     fs.readFile(INTAKE_PATH, "utf8"),
@@ -103,24 +132,87 @@ export async function getIntakeRows(): Promise<IntakeRow[]> {
       .filter((item) => item.optimized)
       .map((item) => [item.optimized!.replaceAll("\\", "/"), item]),
   );
+  const manifestBySource = new Map(
+    manifest
+      .filter((item) => item.source)
+      .map((item) => [normalizeSource(item.source!), item]),
+  );
 
-  const rows = records.flatMap((values) => {
+  const rows: IntakeRow[] = [];
+
+  for (const values of records) {
     const row = Object.fromEntries(headers.map((header, index) => [header, values[index]?.trim() ?? ""]));
-    const filePath = row.file_path;
-    const mediaType =
-      row.media_type === "video" ? "video" : row.media_type === "image" ? "image" : null;
-    const details = metadata.get(filePath.replaceAll("\\", "/"));
-    const width = details?.optimized_width ?? details?.width;
-    const height = details?.optimized_height ?? details?.height;
     const hidden = ["no", "false", "0", "draft"].includes(row.publish.toLowerCase());
+    if (hidden) continue;
 
-    if (!filePath || !mediaType || !width || !height || hidden) return [];
+    const rawMediaType = row.media_type.toLowerCase();
+    const isEmbed = rawMediaType === "embed";
 
-    return [{
+    if (isEmbed) {
+      if (!row.external_url || !row.title) continue;
+
+      let filePath = row.file_path.replaceAll("\\", "/");
+      let posterPath = row.poster_path.replaceAll("\\", "/");
+      let details = filePath ? metadata.get(filePath) : undefined;
+
+      if (!filePath && row.source_file) {
+        const fromSource = manifestBySource.get(normalizeSource(row.source_file));
+        if (fromSource?.optimized) {
+          filePath = fromSource.optimized.replaceAll("\\", "/");
+          posterPath = fromSource.poster?.replaceAll("\\", "/") ?? "";
+          details = fromSource;
+        }
+      }
+
+      const previewMedia =
+        filePath && details
+          ? buildDropFile(filePath, posterPath, "image", details)
+          : null;
+
+      rows.push({
+        sourceFile: row.source_file || row.title,
+        filePath,
+        posterPath,
+        mediaType: "embed",
+        projectSlug: row.project_slug,
+        title: row.title,
+        contentTypes: row.content_types,
+        contributionChips: row.contribution_chips,
+        description: row.description,
+        year: row.year,
+        organization: row.organization,
+        externalUrl: row.external_url,
+        publish: row.publish,
+        isEmbed: true,
+        media: previewMedia,
+      });
+      continue;
+    }
+
+    let filePath = row.file_path.replaceAll("\\", "/");
+    let posterPath = row.poster_path.replaceAll("\\", "/");
+    let details = filePath ? metadata.get(filePath) : undefined;
+
+    if (!filePath && row.source_file) {
+      const fromSource = manifestBySource.get(normalizeSource(row.source_file));
+      if (fromSource?.optimized) {
+        filePath = fromSource.optimized.replaceAll("\\", "/");
+        posterPath = fromSource.poster?.replaceAll("\\", "/") ?? "";
+        details = fromSource;
+      }
+    }
+
+    const mediaType =
+      rawMediaType === "video" ? "video" : rawMediaType === "image" ? "image" : null;
+    const media = filePath && mediaType ? buildDropFile(filePath, posterPath, mediaType, details) : null;
+
+    if (!media && !row.title) continue;
+
+    rows.push({
       sourceFile: row.source_file,
       filePath,
-      posterPath: row.poster_path,
-      mediaType: mediaType as DropFile["kind"],
+      posterPath,
+      mediaType: (mediaType ?? "image") as DropFile["kind"],
       projectSlug: row.project_slug,
       title: row.title,
       contentTypes: row.content_types,
@@ -130,18 +222,10 @@ export async function getIntakeRows(): Promise<IntakeRow[]> {
       organization: row.organization,
       externalUrl: row.external_url,
       publish: row.publish,
-      media: {
-        url: publicUrl(filePath),
-        filename: path.basename(filePath),
-        ext: path.extname(filePath).toLowerCase(),
-        kind: mediaType as DropFile["kind"],
-        width,
-        height,
-        posterUrl: row.poster_path ? publicUrl(row.poster_path) : undefined,
-        duration: details?.duration_seconds,
-      },
-    }];
-  });
+      isEmbed: false,
+      media,
+    });
+  }
 
   return rows;
 }

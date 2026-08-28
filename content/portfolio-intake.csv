@@ -1,4 +1,4 @@
-source_file,file_path,poster_path,media_type,project_slug,title,content_types,contribution_chips,description,year,organization,external_url,publish
+﻿source_file,file_path,poster_path,media_type,project_slug,title,content_types,contribution_chips,description,year,organization,external_url,publish
 1. Aware - Business Owner,public/media/1-aware-business-owner.mp4,public/media/1-aware-business-owner-poster.webp,video,saas-promo,Trend Recreation,reel,idea|shoot|edit,Viral Kumar reel as aware content proposal for instagram business owners,2026,Academics,,yes
 1. Aware - Students,public/media/1-aware-students.mp4,public/media/1-aware-students-poster.webp,video,saas-promo,Scrollstopper,reel,idea|shoot|edit,Unique hook for aware content proposal to students,2026,Academics,,yes
 1.3 Aware Static - All.png,public/media/1-3-aware-static-all.webp,,image,saas-promo,Mock Recommendation,static,idea|design,A spin on the google search result trending static,2026,Academics,,yes
@@ -11,7 +11,7 @@ source_file,file_path,poster_path,media_type,project_slug,title,content_types,co
 4. Purchase - S+F,public/media/4-purchase-s-f.mp4,public/media/4-purchase-s-f-poster.webp,video,saas-promo,Cinematic UGC,reel,idea|edit,Hyperstylized storytelling reel for sales campaign,2026,Academics,,yes
 4.b Purchase,public/media/4-b-purchase.mp4,public/media/4-b-purchase-poster.webp,video,bakery-promo,Valentine's Promo,reel,idea|shoot|edit,Occasion-based discount announcement reel proposal,2026,Love Doughs,,yes
 4.c Purchase,public/media/4-c-purchase.mp4,public/media/4-c-purchase-poster.webp,video,bakery-promo,GiF Engagement,reel,idea|edit,Facebook post challenge to reveal discount code,2026,Love Doughs,,yes
-4.d Purchase (1).png,public/media/4-d-purchase-1.webp,,image,bakery-promo,Giveaway Campaign,static,idea|design,Friendship day campaign announcement mockup,2026,Love Doughs,,yes
+4.d Purchase (1).png,public/media/4-d-purchase-1.webp,,image,bakery-promo,Giveaway Campaign,static,idea|design,Friendship day campaign announcement mockup ,2026,Love Doughs,,yes
 6. Expand - Mkt Agency,public/media/6-expand-mkt-agency.mp4,public/media/6-expand-mkt-agency-poster.webp,video,saas-promo,Testimonial CTA,reel,idea|shoot|edit,Success story showcase to attract niche bases,2026,Academics,,yes
 6.a Expand,public/media/6-a-expand.mp4,public/media/6-a-expand-poster.webp,video,bakery-promo,Blind Test,reel,idea|shoot|edit,New flavor guessing game concept,2026,Love Doughs,,yes
 6.c Expand,public/media/6-c-expand.mp4,public/media/6-c-expand-poster.webp,video,bakery-promo,Carousel Slider,static,idea|design,Instagram carousel feature usage for flavor reveal,2026,Love Doughs,,yes
@@ -27,7 +27,17 @@ Speech Reel for Turkiye.mp4,public/media/speech-reel-for-turkiye.mp4,public/medi
 Trade Cookies for Chips _ Love Doughs.webm,public/media/trade-cookies-for-chips-love-doughs.mp4,public/media/trade-cookies-for-chips-love-doughs-poster.webp,video,bakery-promo,Campaign Microsite,website,idea|design,Landing page walkthrough of a proposed campaign,2026,Love Doughs,,yes
 WhatsApp Video 2026-06-24 at 11.46.52 AM.mp4,public/media/whatsapp-video-2026-06-24-at-11-46-52-am.mp4,public/media/whatsapp-video-2026-06-24-at-11-46-52-am-poster.webp,video,bida-content,Platform Launch,reel,idea|shoot|edit,Introduction of platform to show what problem it solves,2025,BIDA,,yes
 নারায়ণগঞ্জে তরুণ-তরুণীদের হাতে কার্ডস্টকের রাজ্য _ The Business Standard.mp4,public/media/the-business-standard.mp4,public/media/the-business-standard-poster.webp,video,tbs-content,Product BTS Coverage,reel,idea|shoot,News coverage of young entrepreneurs,2023,The Business Standard,,yes
-TBS Miniature.mp4,public/media/tbs-miniature.mp4,public/media/tbs-miniature-poster.webp,video,tbs-content,Product BTS Coverage 2,reel,idea|shoot,News coverage of unique business,2023,The Business Standard,,yes
-marina tbs.png,public/media/marina-tbs.webp,,image,tbs-content,Infographic 1,static,idea|design,Content series for promo of a contest,2023,The Business Standard,,yes
-kashef tbs.png,public/media/kashef-tbs.webp,,image,tbs-content,Infographic 2,static,idea|design,Content series for promo of a contest,2023,The Business Standard,,yes
-LTE Case.mp4,public/media/lte-case.mp4,public/media/lte-case-poster.webp,video,lte-content,Commward-winning Campaign,static,idea,Case video for campaign with strategy involvement,2024,LTE Advertising,,yes
+TBS Miniature.mp4,,,video,tbs-content,Product BTS Coverage 2,reel,idea|shoot,News coverage of unique business,2023,The Business Standard,,yes
+marina tbs.png,,,image,tbs-content,Infographic 1,static,idea|design,Content series for promo of a contest,2023,The Business Standard,,yes
+kashef tbs.png,,,image,tbs-content,Infographic 2,static,idea|design,Content series for promo of a contest,2023,The Business Standard,,yes
+LTE Case.mp4,,,video,lte-content,Commward-winning Campaign,static,idea,Case video for campaign with strategy involvement,2024,LTE Advertising,,yes
+,,,embed,,Economic Cluster Mapping,webapp,idea|develop,Interactive map for ADB workshop,2026,BIDA,https://shudipta-dip.github.io/bd-cluster-mapping/,yes
+billboard.png,public/media/billboard.webp,,image,,OOH Placement Optimization,data,collect|analyze,Google Maps scraped data to find min. needed billboards for max. eyeballs,2026,Personal,https://www.linkedin.com/pulse/data-driven-approach-ooh-placement-dhaka-city-shudipta-bhowmick-dip-dzvic/,yes
+,,,embed,,Linkedin Lead Generator,webapp,idea|develop,Automation for pre-event outreach ,2025,BIDA,https://leadscoutbidaai.vercel.app/,yes
+,,,embed,,Biman BD Sentiment Analysis,data,collect|analyze,Social media and review site analysis of perception over 20 years,2026,Academic,https://shudipta-dip.github.io/biman-bangladesh-analysis/,yes
+bracscb.png,,,embed,,BRAC vs. SCB Salience,data,collect|analyze,Comparative sentiment analysis of 2 bank brands,2026,Academic,https://bracscbmkt.streamlit.app/,yes
+,,,embed,,Marketing Agency Website,website,idea|develop,Dummy website for coursework,2026,Academic,https://yesdeardigital.vercel.app/,yes
+,,,embed,,SaaS Website,website,idea|develop,Dummy website for coursework,2026,Academic,https://optima-ai-m411.vercel.app/,yes
+,,,embed,,Bangla Ad Script LLM,webapp,idea|develop,"Bangla-trained, RAG-enabled ML model for script generation",2026,Academic,https://lekhai-ads.vercel.app/,yes
+,,,embed,,Cookie Business Website,website,idea|develop,Playful site for home bakery,2026,Love Doughs,https://lovedoughs.vercel.app/,yes
+,,,embed,,Investment News Aggregator,webapp,idea|develop,RSS feed of BD-related investment news from 60+ countries,2026,BIDA,https://bdinvestmentnewsfeed.vercel.app/,yes

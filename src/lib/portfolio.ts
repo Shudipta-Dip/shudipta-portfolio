@@ -12,6 +12,8 @@ export type ProjectWithMedia = Project & {
   media: ProjectMedia;
   displayContentType: string;
   displayContributions: string[];
+  isEmbed: boolean;
+  embedUrl?: string;
 };
 
 const PINNED_BOARD_LEAD = [
@@ -114,13 +116,15 @@ const categoryAliases: Record<string, Category> = {
   design: "design",
   reels: "reels",
   reel: "reels",
+  story: "reels",
   product: "product",
   data: "data",
   static: "design",
-  story: "reels",
   banner: "design",
   print: "design",
   website: "product",
+  webapp: "product",
+  embed: "product",
 };
 
 const contributionAliases: Record<string, ContributionId> = {
@@ -188,10 +192,29 @@ function uniqueSlug(base: string, used: Set<string>) {
 }
 
 function categoriesFor(row: IntakeRow): Category[] {
-  const selected = splitPipe(row.contentTypes)
-    .map((item) => categoryAliases[item])
-    .filter((item): item is Category => Boolean(item));
-  return selected.length ? [...new Set(selected)] : [row.mediaType === "video" ? "reels" : "design"];
+  const tokens = splitPipe(row.contentTypes);
+  if (!tokens.length) {
+    if (row.isEmbed) return ["product"];
+    return [row.media?.kind === "video" ? "reels" : "design"];
+  }
+
+  const selected = new Set<Category>();
+  for (const token of tokens) {
+    if (token === "data") {
+      selected.add("data");
+      continue;
+    }
+
+    const aliased = categoryAliases[token];
+    if (aliased === "design" || aliased === "reels") {
+      selected.add(aliased);
+      continue;
+    }
+
+    selected.add("product");
+  }
+
+  return selected.size ? [...selected] : ["product"];
 }
 
 function intakeLabels(row: IntakeRow) {
@@ -207,7 +230,7 @@ function contributionsFor(row: IntakeRow): ContributionId[] {
     .filter((item): item is ContributionId => Boolean(item) && contributionIds.has(item));
   return selected.length
     ? [...new Set(selected)]
-    : [row.mediaType === "video" ? "video" : "visual"];
+    : [row.media?.kind === "video" ? "video" : row.isEmbed ? "product" : "visual"];
 }
 
 function shapeFor(width: number, height: number): CoverShape {
@@ -219,12 +242,19 @@ function shapeFor(width: number, height: number): CoverShape {
 }
 
 function mediaFor(rows: IntakeRow[]): ProjectMedia {
-  const files = rows.map((row) => row.media);
+  const files = rows.flatMap((row) => (row.media ? [row.media] : []));
   const cover = files[0];
   return {
     cover,
     gallery: files.filter((file) => file.kind === "image" && file.url !== cover?.url),
     videos: files.filter((file) => file.kind === "video"),
+  };
+}
+
+function embedFields(row: IntakeRow) {
+  return {
+    isEmbed: row.isEmbed,
+    embedUrl: row.isEmbed ? row.externalUrl : undefined,
   };
 }
 
@@ -237,8 +267,12 @@ function makePreviewProject(
   const title = lead.title || displayTitle(lead.sourceFile);
   const description =
     lead.description ||
-    `${lead.mediaType === "video" ? "Video" : "Design"} work from the portfolio media drop.`;
-  const links = lead.externalUrl ? [{ label: "Visit project", href: lead.externalUrl }] : undefined;
+    (lead.isEmbed
+      ? "Interactive project embedded from the live build."
+      : `${lead.media?.kind === "video" ? "Video" : "Design"} work from the portfolio media drop.`);
+  const links = lead.externalUrl
+    ? [{ label: lead.isEmbed ? "Open live build" : "Visit project", href: lead.externalUrl }]
+    : undefined;
   const baseSlug = lead.title
     ? slugify(lead.title)
     : lead.projectSlug || `drop-${slugify(displayTitle(lead.sourceFile))}`;
@@ -256,10 +290,15 @@ function makePreviewProject(
     categories: categoriesFor(lead),
     contributions: contributionsFor(lead),
     links,
-    coverShape: shapeFor(lead.media.width, lead.media.height),
+    coverShape: lead.media
+      ? shapeFor(lead.media.width, lead.media.height)
+      : lead.isEmbed
+        ? "landscape"
+        : "square",
     accent: accents[index % accents.length],
     media: mediaFor(rows),
     ...labels,
+    ...embedFields(lead),
   };
 }
 
@@ -271,6 +310,7 @@ function applyIntake(project: Project, rows: IntakeRow[]): ProjectWithMedia {
       media: mediaFor([]),
       displayContentType: "",
       displayContributions: [],
+      isEmbed: false,
     };
   }
 
@@ -293,11 +333,14 @@ function applyIntake(project: Project, rows: IntakeRow[]): ProjectWithMedia {
     categories: intakeCategories,
     contributions: intakeContributions,
     links: lead.externalUrl
-      ? [{ label: "Visit project", href: lead.externalUrl }]
+      ? [{ label: lead.isEmbed ? "Open live build" : "Visit project", href: lead.externalUrl }]
       : project.links,
-    coverShape: shapeFor(lead.media.width, lead.media.height),
+    coverShape: lead.media
+      ? shapeFor(lead.media.width, lead.media.height)
+      : project.coverShape,
     media: mediaFor(rows),
     ...labels,
+    ...embedFields(lead),
   };
 }
 

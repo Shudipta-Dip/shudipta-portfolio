@@ -1,10 +1,11 @@
-import { Expand, Play } from "lucide-react";
+import { Expand, Globe, Play } from "lucide-react";
 import Link from "next/link";
 
 import { CoverArt, MediaFrame } from "@/components/aero/cover-art";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ProjectWithMedia } from "@/lib/portfolio";
 import { IntakeChipRow } from "@/components/portfolio/contribution-chip";
+import { ProjectEmbed } from "@/components/portfolio/project-embed";
 
 export function ProjectCard({ project }: { project: ProjectWithMedia }) {
   const cover = project.media.cover;
@@ -14,7 +15,16 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
     <Link href={`/work/${project.slug}`} className="group inline-block w-full">
       <Card className="gap-0 py-0 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(14,90,130,0.22)]">
         <div className="group/cover relative">
-          {cover ? (
+          {project.isEmbed && project.embedUrl && !cover ? (
+            <div className="relative aspect-[16/10] overflow-hidden bg-[#0a1620]">
+              <ProjectEmbed
+                url={project.embedUrl}
+                title={project.title}
+                className="pointer-events-none h-full min-h-full scale-[1.02] opacity-95"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#0a1620]/55 via-transparent to-transparent" />
+            </div>
+          ) : cover ? (
             <MediaFrame
               src={cover.url}
               alt={project.title}
@@ -33,6 +43,11 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
             />
           )}
           <div className="pointer-events-none absolute top-3 right-3 flex items-center gap-1.5">
+            {project.isEmbed ? (
+              <span className="gel-surface inline-flex size-8 items-center justify-center rounded-full border border-white/70 text-white">
+                <Globe className="size-3.5" />
+              </span>
+            ) : null}
             {hasVideo ? (
               <span className="gel-surface inline-flex size-8 items-center justify-center rounded-full border border-white/70 text-white transition-opacity group-hover/cover:opacity-0">
                 <Play className="size-3.5 fill-white" />

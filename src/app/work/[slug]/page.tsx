@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
 import { CoverArt, MediaFrame } from "@/components/aero/cover-art";
 import { IntakeChipRow, MetaChipRow } from "@/components/portfolio/contribution-chip";
+import { ProjectEmbed } from "@/components/portfolio/project-embed";
 import { buttonVariants } from "@/components/ui/button";
 import { getProjectBySlug, getProjectsWithMedia, getRelatedProjects } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
@@ -61,7 +62,13 @@ export default async function ProjectPage({
           portraitCover && "lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(22rem,1fr)] lg:items-start",
         )}
       >
-        {cover ? (
+        {project.isEmbed && project.embedUrl ? (
+          <ProjectEmbed
+            url={project.embedUrl}
+            title={project.title}
+            className="min-h-[70vh] rounded-none lg:min-h-[calc(100vh-12rem)]"
+          />
+        ) : cover ? (
           <MediaFrame
             src={cover.url}
             alt={project.title}

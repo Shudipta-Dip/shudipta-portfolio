@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { IntakeChipRow, MetaChipRow } from "@/components/portfolio/contribution-chip";
+import { ProjectEmbed } from "@/components/portfolio/project-embed";
 import type { ProjectWithMedia } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,9 @@ export function ScrollingModeSlide({
   onPanelCollapse,
 }: ScrollingModeSlideProps) {
   const cover = project.media.cover;
+  const isEmbed = project.isEmbed && project.embedUrl;
+  const frameWidth = cover?.width ?? 1280;
+  const frameHeight = cover?.height ?? 800;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(cover?.duration ?? 0);
@@ -112,13 +116,13 @@ export function ScrollingModeSlide({
     setCurrentTime(value);
   };
 
-  if (!cover) return null;
+  if (!cover && !isEmbed) return null;
 
   return (
     <section className="reels-slide relative h-[100dvh] w-full shrink-0 snap-start snap-always overflow-hidden">
       <div className="reels-stage-bg absolute inset-0" />
 
-      <ReelsContentShell width={cover.width} height={cover.height}>
+      <ReelsContentShell width={frameWidth} height={frameHeight}>
         <div
           className={cn("absolute inset-0", isVideo && isActive && "cursor-pointer")}
           onClick={isVideo && isActive ? togglePlayback : undefined}
@@ -136,16 +140,22 @@ export function ScrollingModeSlide({
           tabIndex={isVideo && isActive ? -1 : undefined}
           aria-label={isVideo && isActive ? (isPaused ? "Play video" : "Pause video") : undefined}
         >
-          {isVideo ? (
+          {isEmbed ? (
+            <ProjectEmbed
+              url={project.embedUrl!}
+              title={project.title}
+              className="size-full bg-white"
+            />
+          ) : isVideo ? (
             <video
               ref={videoRef}
-              src={cover.url}
-              poster={cover.posterUrl}
+              src={cover!.url}
+              poster={cover!.posterUrl}
               playsInline
               loop
               preload={isActive ? "auto" : "metadata"}
-              width={cover.width}
-              height={cover.height}
+              width={cover!.width}
+              height={cover!.height}
               className="pointer-events-none block size-full object-contain"
               onLoadedMetadata={(event) => {
                 const total = event.currentTarget.duration;
@@ -157,10 +167,10 @@ export function ScrollingModeSlide({
             // Native img: Next/Image lazy loading breaks inside the reels scroll container.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={cover.url}
+              src={cover!.url}
               alt={project.title}
-              width={cover.width}
-              height={cover.height}
+              width={cover!.width}
+              height={cover!.height}
               loading="eager"
               decoding="async"
               className="block size-full object-contain"

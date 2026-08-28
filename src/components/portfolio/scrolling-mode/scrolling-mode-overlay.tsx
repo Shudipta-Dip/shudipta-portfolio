@@ -3,18 +3,28 @@
 import { ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import type { Category } from "../../../../content/projects";
 import type { ProjectWithMedia } from "@/lib/portfolio";
 
+import { ScrollingModeCatchUp } from "./scrolling-mode-catch-up";
 import { type PanelState } from "./panel-toggle";
 import { ScrollingModeSlide } from "./scrolling-mode-slide";
 
 type ScrollingModeOverlayProps = {
   projects: ProjectWithMedia[];
+  allProjects: ProjectWithMedia[];
   onClose: () => void;
+  onBrowseCategory: (category: Category) => void;
 };
 
-export function ScrollingModeOverlay({ projects, onClose }: ScrollingModeOverlayProps) {
+export function ScrollingModeOverlay({
+  projects,
+  allProjects,
+  onClose,
+  onBrowseCategory,
+}: ScrollingModeOverlayProps) {
   const scrollableProjects = projects.filter((project) => project.media.cover);
+  const slideCount = scrollableProjects.length + 1;
   const containerRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -69,7 +79,7 @@ export function ScrollingModeOverlay({ projects, onClose }: ScrollingModeOverlay
     }
 
     return () => observer.disconnect();
-  }, [scrollableProjects.length]);
+  }, [slideCount]);
 
   if (!scrollableProjects.length) return null;
 
@@ -134,6 +144,14 @@ export function ScrollingModeOverlay({ projects, onClose }: ScrollingModeOverlay
             />
           </div>
         ))}
+        <div
+          ref={(node) => {
+            slideRefs.current[scrollableProjects.length] = node;
+          }}
+          data-slide-index={scrollableProjects.length}
+        >
+          <ScrollingModeCatchUp projects={allProjects} onBrowseCategory={onBrowseCategory} />
+        </div>
       </div>
     </div>
   );

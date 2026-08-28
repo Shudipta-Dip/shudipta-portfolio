@@ -481,5 +481,33 @@
     "duration_seconds": 153.45,
     "source_video_codec": "h264",
     "source_audio_codec": "aac"
+  },
+  {
+    "source": "billboard.png",
+    "detected_type": "image/png",
+    "optimized": "public/media/billboard.webp",
+    "poster": "",
+    "source_bytes": 423674,
+    "optimized_bytes": 63870,
+    "savings_percent": 84.9,
+    "status": "ok",
+    "width": 1600,
+    "height": 600,
+    "optimized_width": 1600,
+    "optimized_height": 600
+  },
+  {
+    "source": "bracscb.png",
+    "detected_type": "image/png",
+    "optimized": "public/media/bracscb.webp",
+    "poster": "",
+    "source_bytes": 151518,
+    "optimized_bytes": 55838,
+    "savings_percent": 63.1,
+    "status": "ok",
+    "width": 1227,
+    "height": 827,
+    "optimized_width": 1227,
+    "optimized_height": 827
   }
 ]
