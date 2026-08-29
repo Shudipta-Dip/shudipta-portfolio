@@ -1,6 +1,10 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import { HoverVideoPreview } from "@/components/portfolio/hover-video-preview";
+import { MediaSkeleton } from "@/components/portfolio/media-skeleton";
 import { categoryIcons } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import type { Accent, Category, CoverShape } from "../../../content/projects";
@@ -76,6 +80,19 @@ export function MediaFrame({
   preview?: boolean;
   className?: string;
 }) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(false);
+  }, [src, posterUrl]);
+
+  useEffect(() => {
+    if (kind !== "image") return;
+    const probe = new window.Image();
+    probe.src = src;
+    if (probe.complete && probe.naturalWidth > 0) setReady(true);
+  }, [kind, src]);
+
   if (kind === "video" && preview && !controls) {
     return (
       <HoverVideoPreview
@@ -91,20 +108,26 @@ export function MediaFrame({
 
   return (
     <div
-      className={cn("relative overflow-hidden", className)}
+      className={cn("relative overflow-hidden bg-[#0a1620]", className)}
       style={{ aspectRatio: `${width} / ${height}` }}
     >
+      {!ready ? <MediaSkeleton tone="card" className="z-10" /> : null}
       {kind === "video" ? (
         <video
           src={src}
           poster={posterUrl}
           width={width}
           height={height}
-          className="block size-full object-contain"
+          className={cn(
+            "block size-full object-contain transition-opacity duration-300",
+            ready ? "opacity-100" : "opacity-0",
+          )}
           controls={controls}
           muted={!controls}
           playsInline
           preload="metadata"
+          onLoadedData={() => setReady(true)}
+          onError={() => setReady(true)}
         />
       ) : (
         <Image
@@ -113,7 +136,12 @@ export function MediaFrame({
           width={width}
           height={height}
           sizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 50vw, (max-width: 1535px) 33vw, 25vw"
-          className="block size-full object-contain"
+          className={cn(
+            "block size-full object-contain transition-opacity duration-300",
+            ready ? "opacity-100" : "opacity-0",
+          )}
+          onLoad={() => setReady(true)}
+          onError={() => setReady(true)}
         />
       )}
     </div>

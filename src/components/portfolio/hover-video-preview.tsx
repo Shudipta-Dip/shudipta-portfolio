@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { MediaSkeleton } from "@/components/portfolio/media-skeleton";
 import { cn } from "@/lib/utils";
 
 function snippetStarts(duration: number) {
@@ -35,6 +36,11 @@ export function HoverVideoPreview({
   const seekingRef = useRef(false);
   const hoveringRef = useRef(false);
   const [hovering, setHovering] = useState(false);
+  const [posterReady, setPosterReady] = useState(!posterUrl);
+
+  useEffect(() => {
+    setPosterReady(!posterUrl);
+  }, [posterUrl, src]);
 
   useEffect(() => {
     hoveringRef.current = hovering;
@@ -107,16 +113,21 @@ export function HoverVideoPreview({
       }}
       onPointerLeave={() => setHovering(false)}
     >
+      {!posterReady ? <MediaSkeleton tone="card" className="z-20" /> : null}
       {posterUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={posterUrl}
           alt=""
           aria-hidden
+          decoding="async"
+          loading="lazy"
           className={cn(
             "absolute inset-0 z-10 block size-full object-contain transition-opacity duration-200",
-            hovering ? "opacity-0" : "opacity-100",
+            hovering ? "opacity-0" : posterReady ? "opacity-100" : "opacity-0",
           )}
+          onLoad={() => setPosterReady(true)}
+          onError={() => setPosterReady(true)}
         />
       ) : null}
       <video

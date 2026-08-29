@@ -5,9 +5,10 @@ type ProjectEmbedProps = {
   title: string;
   className?: string;
   loading?: "lazy" | "eager";
+  onLoad?: () => void;
 };
 
-export function ProjectEmbed({ url, title, className, loading = "lazy" }: ProjectEmbedProps) {
+export function ProjectEmbed({ url, title, className, loading = "lazy", onLoad }: ProjectEmbedProps) {
   return (
     <iframe
       src={url}
@@ -17,6 +18,7 @@ export function ProjectEmbed({ url, title, className, loading = "lazy" }: Projec
       tabIndex={-1}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; geolocation; gyroscope; picture-in-picture"
       referrerPolicy="no-referrer-when-downgrade"
+      onLoad={onLoad}
     />
   );
 }

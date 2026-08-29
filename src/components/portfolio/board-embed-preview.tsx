@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { CoverArt } from "@/components/aero/cover-art";
+import { MediaSkeleton } from "@/components/portfolio/media-skeleton";
 import { ProjectEmbed } from "@/components/portfolio/project-embed";
 import { cn } from "@/lib/utils";
 import type { Accent, Category, CoverShape } from "../../../content/projects";
@@ -31,6 +32,7 @@ export function BoardEmbedPreview({
   const visibleRef = useRef(false);
   const loadedRef = useRef(false);
   const [showEmbed, setShowEmbed] = useState(false);
+  const [embedReady, setEmbedReady] = useState(false);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -95,9 +97,9 @@ export function BoardEmbedPreview({
       <div
         className={cn(
           "absolute inset-0 transition-opacity duration-500",
-          showEmbed ? "pointer-events-none opacity-0" : "opacity-100",
+          showEmbed && embedReady ? "pointer-events-none opacity-0" : "opacity-100",
         )}
-        aria-hidden={showEmbed}
+        aria-hidden={showEmbed && embedReady}
       >
         <CoverArt
           accent={accent}
@@ -105,13 +107,18 @@ export function BoardEmbedPreview({
           shape={shape}
           className="!aspect-auto size-full min-h-0"
         />
+        {showEmbed && !embedReady ? <MediaSkeleton tone="card" className="z-10" /> : null}
       </div>
       {showEmbed ? (
         <ProjectEmbed
           url={url}
           title={title}
           loading="eager"
-          className="pointer-events-none absolute inset-0 h-full min-h-full scale-[1.02] opacity-95"
+          className={cn(
+            "pointer-events-none absolute inset-0 h-full min-h-full scale-[1.02] transition-opacity duration-300",
+            embedReady ? "opacity-95" : "opacity-0",
+          )}
+          onLoad={() => setEmbedReady(true)}
         />
       ) : null}
       <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#0a1620]/55 via-transparent to-transparent" />

@@ -80,10 +80,12 @@ export function ScrollingModeOverlay({
 
   useEffect(() => {
     const warmAround = [
+      activeIndex - 2,
       activeIndex - 1,
       activeIndex,
       activeIndex + 1,
       activeIndex + 2,
+      activeIndex + 3,
     ];
 
     for (const index of warmAround) {
@@ -171,7 +173,7 @@ export function ScrollingModeOverlay({
 
       <div
         ref={containerRef}
-        className="h-[100dvh] touch-pan-y overflow-y-auto overscroll-none snap-y snap-mandatory [-webkit-overflow-scrolling:touch]"
+        className="reels-stage-bg h-[100dvh] touch-pan-y overflow-y-auto overscroll-none snap-y snap-mandatory [-webkit-overflow-scrolling:touch]"
       >
         {scrollableProjects.map((project, index) => (
           <div
@@ -184,7 +186,7 @@ export function ScrollingModeOverlay({
             <ScrollingModeSlide
               project={project}
               isActive={activeIndex === index}
-              isNearby={Math.abs(activeIndex - index) <= 1}
+              isNearby={Math.abs(activeIndex - index) <= 2}
               panelState={getPanelState(project.slug)}
               soundEnabled={soundEnabled}
               onPanelAdvance={() => advancePanel(project.slug)}

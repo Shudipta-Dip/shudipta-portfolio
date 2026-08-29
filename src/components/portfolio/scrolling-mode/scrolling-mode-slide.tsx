@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { IntakeChipRow, MetaChipRow } from "@/components/portfolio/contribution-chip";
+import { MediaSkeleton } from "@/components/portfolio/media-skeleton";
 import { ProjectEmbed } from "@/components/portfolio/project-embed";
 import type { ProjectWithMedia } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
@@ -45,13 +46,12 @@ export function ScrollingModeSlide({
 }: ScrollingModeSlideProps) {
   const cover = project.media.cover;
   const isEmbed = project.isEmbed && project.embedUrl;
-  const frameWidth = cover?.width ?? 1280;
-  const frameHeight = cover?.height ?? 800;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(cover?.duration ?? 0);
   const [isPaused, setIsPaused] = useState(false);
-  const [mediaReady, setMediaReady] = useState(false);
+  const [frameReady, setFrameReady] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const isVideo = cover?.kind === "video";
   const isVertical = cover ? cover.height / cover.width >= 1.02 : false;
   const showMetadata = panelState !== "fullscreen";
@@ -60,6 +60,9 @@ export function ScrollingModeSlide({
     showMetadata && isVertical && (panelState === "default" || panelState === "expanded");
   const shouldWarmMedia = isActive || isNearby;
   const posterUrl = cover?.posterUrl;
+  const previewSrc = isVideo ? posterUrl ?? cover?.url : cover?.url;
+
+  const markFrameReady = useCallback(() => setFrameReady(true), []);
 
   const togglePlayback = useCallback(() => {
     const video = videoRef.current;
@@ -76,8 +79,17 @@ export function ScrollingModeSlide({
   }, [isActive, isVideo]);
 
   useEffect(() => {
-    setMediaReady(false);
-  }, [project.slug, cover?.url]);
+    setFrameReady(false);
+    setVideoReady(false);
+  }, [project.slug, cover?.url, posterUrl]);
+
+  // Cached images often fire load before React attaches onLoad — sync ready state.
+  useEffect(() => {
+    if (!previewSrc || isEmbed) return;
+    const probe = new window.Image();
+    probe.src = previewSrc;
+    if (probe.complete && probe.naturalWidth > 0) setFrameReady(true);
+  }, [previewSrc, isEmbed]);
 
   useEffect(() => {
     if (!isActive) setIsPaused(false);
@@ -131,8 +143,10 @@ export function ScrollingModeSlide({
   if (!cover && !isEmbed) return null;
 
   return (
-    <section className="reels-slide reels-stage-bg relative h-[100dvh] min-h-[100dvh] w-full shrink-0 snap-start snap-always overflow-hidden [transform:translateZ(0)]">
-      <ReelsContentShell width={frameWidth} height={frameHeight}>
+    <section className="reels-slide reels-stage-bg relative h-[100dvh] min-h-[100svh] w-full shrink-0 snap-start snap-always overflow-hidden">
+      {!frameReady && !isEmbed ? <MediaSkeleton tone="stage" className="z-[5]" /> : null}
+
+      <ReelsContentShell>
         <div
           className={cn("absolute inset-0", isVideo && isActive && "cursor-pointer")}
           onClick={isVideo && isActive ? togglePlayback : undefined}
@@ -150,36 +164,36 @@ export function ScrollingModeSlide({
           tabIndex={isVideo && isActive ? -1 : undefined}
           aria-label={isVideo && isActive ? (isPaused ? "Play video" : "Pause video") : undefined}
         >
-          {!mediaReady && !isEmbed ? (
-            <div className="reels-media-skeleton absolute inset-0 z-[1]" aria-hidden />
-          ) : null}
-
           {isEmbed ? (
             <ProjectEmbed
               url={project.embedUrl!}
               title={project.title}
-              className="size-full bg-white"
+              className="size-full bg-white object-contain"
             />
-          ) : isVideo ? (
+          ) : (
             <>
-              {posterUrl ? (
+              {previewSrc ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={posterUrl}
-                  alt=""
-                  aria-hidden
+                  src={previewSrc}
+                  alt={isVideo ? "" : project.title}
+                  aria-hidden={isVideo}
+                  width={cover!.width}
+                  height={cover!.height}
                   decoding="async"
                   loading={shouldWarmMedia ? "eager" : "lazy"}
+                  fetchPriority={isActive ? "high" : shouldWarmMedia ? "high" : "auto"}
                   className={cn(
-                    "absolute inset-0 z-[2] block size-full object-contain transition-opacity duration-300",
-                    mediaReady && isActive ? "opacity-0" : "opacity-100",
+                    "absolute inset-0 z-[2] block size-full object-contain transition-opacity duration-200",
+                    frameReady ? "opacity-100" : "opacity-0",
+                    isVideo && videoReady && isActive ? "opacity-0" : null,
                   )}
-                  onLoad={() => {
-                    if (!isActive) setMediaReady(true);
-                  }}
+                  onLoad={markFrameReady}
+                  onError={markFrameReady}
                 />
               ) : null}
-              {shouldWarmMedia ? (
+
+              {isVideo && shouldWarmMedia ? (
                 <video
                   ref={videoRef}
                   src={cover!.url}
@@ -187,19 +201,23 @@ export function ScrollingModeSlide({
                   playsInline
                   muted
                   loop
-                  preload={isActive ? "auto" : "metadata"}
+                  preload={isActive ? "auto" : "auto"}
                   width={cover!.width}
                   height={cover!.height}
                   className={cn(
-                    "relative z-[3] block size-full object-contain transition-opacity duration-300",
-                    mediaReady && isActive ? "opacity-100" : "opacity-0",
+                    "absolute inset-0 z-[3] block size-full object-contain transition-opacity duration-200",
+                    videoReady && isActive ? "opacity-100" : "opacity-0",
                   )}
                   onLoadedData={(event) => {
                     const total = event.currentTarget.duration;
                     if (Number.isFinite(total)) setDuration(total);
-                    setMediaReady(true);
+                    setVideoReady(true);
+                    markFrameReady();
                   }}
-                  onCanPlay={() => setMediaReady(true)}
+                  onCanPlay={() => {
+                    setVideoReady(true);
+                    markFrameReady();
+                  }}
                   onLoadedMetadata={(event) => {
                     const total = event.currentTarget.duration;
                     if (Number.isFinite(total)) setDuration(total);
@@ -208,23 +226,6 @@ export function ScrollingModeSlide({
                 />
               ) : null}
             </>
-          ) : (
-            // Native img: Next/Image lazy loading breaks inside the reels scroll container.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={cover!.url}
-              alt={project.title}
-              width={cover!.width}
-              height={cover!.height}
-              loading={shouldWarmMedia ? "eager" : "lazy"}
-              decoding="async"
-              fetchPriority={isActive ? "high" : "auto"}
-              className={cn(
-                "block size-full object-contain transition-opacity duration-300",
-                mediaReady ? "opacity-100" : "opacity-0",
-              )}
-              onLoad={() => setMediaReady(true)}
-            />
           )}
         </div>
       </ReelsContentShell>
