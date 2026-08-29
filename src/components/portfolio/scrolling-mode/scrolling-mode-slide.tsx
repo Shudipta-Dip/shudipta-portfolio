@@ -13,6 +13,7 @@ import { ReelsContentShell } from "./reels-content-shell";
 type ScrollingModeSlideProps = {
   project: ProjectWithMedia;
   isActive: boolean;
+  isNearby: boolean;
   panelState: PanelState;
   soundEnabled: boolean;
   onPanelAdvance: () => void;
@@ -36,6 +37,7 @@ const metadataPanelClass =
 export function ScrollingModeSlide({
   project,
   isActive,
+  isNearby,
   panelState,
   soundEnabled,
   onPanelAdvance,
@@ -49,12 +51,15 @@ export function ScrollingModeSlide({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(cover?.duration ?? 0);
   const [isPaused, setIsPaused] = useState(false);
+  const [mediaReady, setMediaReady] = useState(false);
   const isVideo = cover?.kind === "video";
   const isVertical = cover ? cover.height / cover.width >= 1.02 : false;
   const showMetadata = panelState !== "fullscreen";
   const showExpanded = panelState === "expanded";
   const needsReadabilityFade =
     showMetadata && isVertical && (panelState === "default" || panelState === "expanded");
+  const shouldWarmMedia = isActive || isNearby;
+  const posterUrl = cover?.posterUrl;
 
   const togglePlayback = useCallback(() => {
     const video = videoRef.current;
@@ -69,6 +74,10 @@ export function ScrollingModeSlide({
     setIsPaused(true);
     video.pause();
   }, [isActive, isVideo]);
+
+  useEffect(() => {
+    setMediaReady(false);
+  }, [project.slug, cover?.url]);
 
   useEffect(() => {
     if (!isActive) setIsPaused(false);
@@ -122,9 +131,7 @@ export function ScrollingModeSlide({
   if (!cover && !isEmbed) return null;
 
   return (
-    <section className="reels-slide relative h-[100dvh] w-full shrink-0 snap-start snap-always overflow-hidden">
-      <div className="reels-stage-bg absolute inset-0" />
-
+    <section className="reels-slide reels-stage-bg relative h-[100dvh] min-h-[100dvh] w-full shrink-0 snap-start snap-always overflow-hidden [transform:translateZ(0)]">
       <ReelsContentShell width={frameWidth} height={frameHeight}>
         <div
           className={cn("absolute inset-0", isVideo && isActive && "cursor-pointer")}
@@ -143,6 +150,10 @@ export function ScrollingModeSlide({
           tabIndex={isVideo && isActive ? -1 : undefined}
           aria-label={isVideo && isActive ? (isPaused ? "Play video" : "Pause video") : undefined}
         >
+          {!mediaReady && !isEmbed ? (
+            <div className="reels-media-skeleton absolute inset-0 z-[1]" aria-hidden />
+          ) : null}
+
           {isEmbed ? (
             <ProjectEmbed
               url={project.embedUrl!}
@@ -150,23 +161,53 @@ export function ScrollingModeSlide({
               className="size-full bg-white"
             />
           ) : isVideo ? (
-            <video
-              ref={videoRef}
-              src={cover!.url}
-              poster={cover!.posterUrl}
-              playsInline
-              muted
-              loop
-              preload={isActive ? "auto" : "metadata"}
-              width={cover!.width}
-              height={cover!.height}
-              className="pointer-events-none block size-full object-contain"
-              onLoadedMetadata={(event) => {
-                const total = event.currentTarget.duration;
-                if (Number.isFinite(total)) setDuration(total);
-              }}
-              onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-            />
+            <>
+              {posterUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={posterUrl}
+                  alt=""
+                  aria-hidden
+                  decoding="async"
+                  loading={shouldWarmMedia ? "eager" : "lazy"}
+                  className={cn(
+                    "absolute inset-0 z-[2] block size-full object-contain transition-opacity duration-300",
+                    mediaReady && isActive ? "opacity-0" : "opacity-100",
+                  )}
+                  onLoad={() => {
+                    if (!isActive) setMediaReady(true);
+                  }}
+                />
+              ) : null}
+              {shouldWarmMedia ? (
+                <video
+                  ref={videoRef}
+                  src={cover!.url}
+                  poster={posterUrl}
+                  playsInline
+                  muted
+                  loop
+                  preload={isActive ? "auto" : "metadata"}
+                  width={cover!.width}
+                  height={cover!.height}
+                  className={cn(
+                    "relative z-[3] block size-full object-contain transition-opacity duration-300",
+                    mediaReady && isActive ? "opacity-100" : "opacity-0",
+                  )}
+                  onLoadedData={(event) => {
+                    const total = event.currentTarget.duration;
+                    if (Number.isFinite(total)) setDuration(total);
+                    setMediaReady(true);
+                  }}
+                  onCanPlay={() => setMediaReady(true)}
+                  onLoadedMetadata={(event) => {
+                    const total = event.currentTarget.duration;
+                    if (Number.isFinite(total)) setDuration(total);
+                  }}
+                  onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+                />
+              ) : null}
+            </>
           ) : (
             // Native img: Next/Image lazy loading breaks inside the reels scroll container.
             // eslint-disable-next-line @next/next/no-img-element
@@ -175,9 +216,14 @@ export function ScrollingModeSlide({
               alt={project.title}
               width={cover!.width}
               height={cover!.height}
-              loading="eager"
+              loading={shouldWarmMedia ? "eager" : "lazy"}
               decoding="async"
-              className="block size-full object-contain"
+              fetchPriority={isActive ? "high" : "auto"}
+              className={cn(
+                "block size-full object-contain transition-opacity duration-300",
+                mediaReady ? "opacity-100" : "opacity-0",
+              )}
+              onLoad={() => setMediaReady(true)}
             />
           )}
         </div>

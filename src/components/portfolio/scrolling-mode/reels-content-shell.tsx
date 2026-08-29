@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
-import { fitMediaInBox } from "@/lib/fit-media";
 import { cn } from "@/lib/utils";
 
 type ReelsContentShellProps = {
@@ -11,38 +10,23 @@ type ReelsContentShellProps = {
   children: React.ReactNode;
 } & Pick<ComponentPropsWithoutRef<"div">, "className">;
 
+/**
+ * Letterbox media into the stage with CSS only — no ResizeObserver.
+ * Avoids a blank/black first paint while JS measures the viewport.
+ */
 export function ReelsContentShell({ width, height, className, children }: ReelsContentShellProps) {
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [frameSize, setFrameSize] = useState<{ width: number; height: number } | null>(null);
-
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    const update = () => {
-      const rect = stage.getBoundingClientRect();
-      setFrameSize(fitMediaInBox(width, height, rect.width, rect.height));
-    };
-
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(stage);
-    window.addEventListener("resize", update);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", update);
-    };
-  }, [width, height]);
+  const aspect = width / height;
 
   return (
-    <div ref={stageRef} className="absolute inset-0 flex items-center justify-center">
+    <div
+      className="absolute inset-0 flex items-center justify-center [container-type:size]"
+      style={{ contain: "layout paint" }}
+    >
       <div
-        className={cn("relative overflow-hidden", className)}
+        className={cn("relative overflow-hidden bg-[#0a1620]", className)}
         style={{
           aspectRatio: `${width} / ${height}`,
-          width: frameSize ? `${frameSize.width}px` : undefined,
-          height: frameSize ? `${frameSize.height}px` : undefined,
+          width: `min(100cqw, calc(100cqh * ${aspect}))`,
           maxWidth: "100%",
           maxHeight: "100%",
         }}

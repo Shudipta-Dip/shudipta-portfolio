@@ -15,8 +15,7 @@ const catchUpFilters = categoryFilters.filter((filter) => filter.id === "product
 
 export function ScrollingModeCatchUp({ projects, onBrowseCategory }: ScrollingModeCatchUpProps) {
   return (
-    <section className="reels-slide relative flex h-[100dvh] w-full shrink-0 snap-start snap-always items-center justify-center overflow-hidden">
-      <div className="reels-stage-bg absolute inset-0" />
+    <section className="reels-slide reels-stage-bg relative flex h-[100dvh] min-h-[100dvh] w-full shrink-0 snap-start snap-always items-center justify-center overflow-hidden [transform:translateZ(0)]">
       <div className="relative z-10 w-full max-w-lg px-6 py-10 text-center">
         <h1 className="font-heading text-4xl font-semibold tracking-tight text-white drop-shadow-[0_2px_12px_rgb(0_0_0/0.35)] sm:text-5xl">
           All caught up :)

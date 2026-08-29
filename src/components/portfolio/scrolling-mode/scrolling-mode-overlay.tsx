@@ -79,13 +79,32 @@ export function ScrollingModeOverlay({
   }, [scrollableProjects.length]);
 
   useEffect(() => {
-    for (const project of scrollableProjects) {
-      const cover = project.media.cover;
-      if (cover?.kind !== "image") continue;
-      const preload = new window.Image();
-      preload.src = cover.url;
+    const warmAround = [
+      activeIndex - 1,
+      activeIndex,
+      activeIndex + 1,
+      activeIndex + 2,
+    ];
+
+    for (const index of warmAround) {
+      const project = scrollableProjects[index];
+      const cover = project?.media.cover;
+      if (!cover) continue;
+
+      if (cover.kind === "image") {
+        const preload = new window.Image();
+        preload.decoding = "async";
+        preload.src = cover.url;
+        continue;
+      }
+
+      if (cover.posterUrl) {
+        const poster = new window.Image();
+        poster.decoding = "async";
+        poster.src = cover.posterUrl;
+      }
     }
-  }, [scrollableProjects]);
+  }, [activeIndex, scrollableProjects]);
 
   useEffect(() => {
     const root = containerRef.current;
@@ -124,7 +143,7 @@ export function ScrollingModeOverlay({
   const hasAnyVideo = scrollableProjects.some((project) => project.media.cover?.kind === "video");
 
   return (
-    <div className="fixed inset-0 z-[120] overflow-hidden bg-black">
+    <div className="fixed inset-0 z-[120] overflow-hidden bg-[#0d3b4a]">
       <button
         type="button"
         onClick={onClose}
@@ -165,6 +184,7 @@ export function ScrollingModeOverlay({
             <ScrollingModeSlide
               project={project}
               isActive={activeIndex === index}
+              isNearby={Math.abs(activeIndex - index) <= 1}
               panelState={getPanelState(project.slug)}
               soundEnabled={soundEnabled}
               onPanelAdvance={() => advancePanel(project.slug)}
