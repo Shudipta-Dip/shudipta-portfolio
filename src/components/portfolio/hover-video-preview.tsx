@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { MediaSkeleton } from "@/components/portfolio/media-skeleton";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,10 @@ function snippetStarts(duration: number) {
     const center = ((index + 1) / (count + 1)) * duration;
     return Math.max(0, Math.min(Math.max(duration - length, 0), center - length / 2));
   });
+}
+
+function markIfDecoded(img: HTMLImageElement | null, onReady: () => void) {
+  if (img && img.complete && img.naturalWidth > 0) onReady();
 }
 
 export function HoverVideoPreview({
@@ -31,6 +35,7 @@ export function HoverVideoPreview({
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const posterRef = useRef<HTMLImageElement>(null);
   const indexRef = useRef(0);
   const startsRef = useRef<number[]>([0]);
   const seekingRef = useRef(false);
@@ -38,8 +43,34 @@ export function HoverVideoPreview({
   const [hovering, setHovering] = useState(false);
   const [posterReady, setPosterReady] = useState(!posterUrl);
 
-  useEffect(() => {
-    setPosterReady(!posterUrl);
+  const markPosterReady = () => setPosterReady(true);
+
+  useLayoutEffect(() => {
+    if (!posterUrl) {
+      setPosterReady(true);
+      return;
+    }
+
+    // Reset, then recover immediately if the browser already has the poster
+    // decoded (common with long-lived /media Cache-Control). Without this,
+    // onLoad can fire before React attaches — or between render and effect —
+    // and the skeleton stays forever.
+    setPosterReady(false);
+    markIfDecoded(posterRef.current, markPosterReady);
+
+    const probe = new window.Image();
+    probe.src = posterUrl;
+    if (probe.complete && probe.naturalWidth > 0) {
+      setPosterReady(true);
+      return;
+    }
+    const onProbeLoad = () => setPosterReady(true);
+    probe.addEventListener("load", onProbeLoad);
+    probe.addEventListener("error", onProbeLoad);
+    return () => {
+      probe.removeEventListener("load", onProbeLoad);
+      probe.removeEventListener("error", onProbeLoad);
+    };
   }, [posterUrl, src]);
 
   useEffect(() => {
@@ -117,17 +148,18 @@ export function HoverVideoPreview({
       {posterUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
+          ref={posterRef}
           src={posterUrl}
           alt=""
           aria-hidden
           decoding="async"
-          loading="lazy"
+          loading="eager"
           className={cn(
             "absolute inset-0 z-10 block size-full object-contain transition-opacity duration-200",
             hovering ? "opacity-0" : posterReady ? "opacity-100" : "opacity-0",
           )}
-          onLoad={() => setPosterReady(true)}
-          onError={() => setPosterReady(true)}
+          onLoad={markPosterReady}
+          onError={markPosterReady}
         />
       ) : null}
       <video
@@ -142,7 +174,7 @@ export function HoverVideoPreview({
         )}
         muted
         playsInline
-        preload={hovering ? "auto" : "none"}
+        preload={hovering ? "auto" : "metadata"}
         disablePictureInPicture
       />
     </div>

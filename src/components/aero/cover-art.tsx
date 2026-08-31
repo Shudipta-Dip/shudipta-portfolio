@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { HoverVideoPreview } from "@/components/portfolio/hover-video-preview";
 import { MediaSkeleton } from "@/components/portfolio/media-skeleton";
@@ -81,17 +81,43 @@ export function MediaFrame({
   className?: string;
 }) {
   const [ready, setReady] = useState(false);
+  const markReady = () => setReady(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setReady(false);
-  }, [src, posterUrl]);
 
-  useEffect(() => {
-    if (kind !== "image") return;
-    const probe = new window.Image();
-    probe.src = src;
-    if (probe.complete && probe.naturalWidth > 0) setReady(true);
-  }, [kind, src]);
+    if (kind === "image") {
+      const probe = new window.Image();
+      probe.src = src;
+      if (probe.complete && probe.naturalWidth > 0) {
+        setReady(true);
+        return;
+      }
+      const done = () => setReady(true);
+      probe.addEventListener("load", done);
+      probe.addEventListener("error", done);
+      return () => {
+        probe.removeEventListener("load", done);
+        probe.removeEventListener("error", done);
+      };
+    }
+
+    if (kind === "video" && posterUrl) {
+      const probe = new window.Image();
+      probe.src = posterUrl;
+      if (probe.complete && probe.naturalWidth > 0) {
+        setReady(true);
+        return;
+      }
+      const done = () => setReady(true);
+      probe.addEventListener("load", done);
+      probe.addEventListener("error", done);
+      return () => {
+        probe.removeEventListener("load", done);
+        probe.removeEventListener("error", done);
+      };
+    }
+  }, [kind, src, posterUrl]);
 
   if (kind === "video" && preview && !controls) {
     return (
@@ -126,8 +152,8 @@ export function MediaFrame({
           muted={!controls}
           playsInline
           preload="metadata"
-          onLoadedData={() => setReady(true)}
-          onError={() => setReady(true)}
+          onLoadedData={markReady}
+          onError={markReady}
         />
       ) : (
         <Image
@@ -140,8 +166,8 @@ export function MediaFrame({
             "block size-full object-contain transition-opacity duration-300",
             ready ? "opacity-100" : "opacity-0",
           )}
-          onLoad={() => setReady(true)}
-          onError={() => setReady(true)}
+          onLoad={markReady}
+          onError={markReady}
         />
       )}
     </div>
