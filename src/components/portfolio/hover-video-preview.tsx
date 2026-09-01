@@ -41,9 +41,19 @@ export function HoverVideoPreview({
   const seekingRef = useRef(false);
   const hoveringRef = useRef(false);
   const [hovering, setHovering] = useState(false);
+  const [canHoverPreview, setCanHoverPreview] = useState(false);
   const [posterReady, setPosterReady] = useState(!posterUrl);
 
   const markPosterReady = () => setPosterReady(true);
+
+  useEffect(() => {
+    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanHoverPreview(query.matches);
+
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   useLayoutEffect(() => {
     if (!posterUrl) {
@@ -133,14 +143,14 @@ export function HoverVideoPreview({
       video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("loadedmetadata", begin);
     };
-  }, [duration, hovering]);
+  }, [canHoverPreview, duration, hovering]);
 
   return (
     <div
       className={cn("relative overflow-hidden bg-[#0a1620]", className)}
       style={{ aspectRatio: `${width} / ${height}` }}
       onPointerEnter={(event) => {
-        if (event.pointerType === "mouse") setHovering(true);
+        if (canHoverPreview && event.pointerType === "mouse") setHovering(true);
       }}
       onPointerLeave={() => setHovering(false)}
     >
@@ -153,7 +163,7 @@ export function HoverVideoPreview({
           alt=""
           aria-hidden
           decoding="async"
-          loading="eager"
+          loading="lazy"
           className={cn(
             "absolute inset-0 z-10 block size-full object-contain transition-opacity duration-200",
             hovering ? "opacity-0" : posterReady ? "opacity-100" : "opacity-0",
@@ -162,21 +172,23 @@ export function HoverVideoPreview({
           onError={markPosterReady}
         />
       ) : null}
-      <video
-        ref={videoRef}
-        src={src}
-        poster={posterUrl}
-        width={width}
-        height={height}
-        className={cn(
-          "relative z-0 block size-full object-contain transition-opacity duration-200",
-          hovering || !posterUrl ? "opacity-100" : "opacity-0",
-        )}
-        muted
-        playsInline
-        preload={hovering ? "auto" : "metadata"}
-        disablePictureInPicture
-      />
+      {canHoverPreview || !posterUrl ? (
+        <video
+          ref={videoRef}
+          src={src}
+          poster={posterUrl}
+          width={width}
+          height={height}
+          className={cn(
+            "relative z-0 block size-full object-contain transition-opacity duration-200",
+            hovering || !posterUrl ? "opacity-100" : "opacity-0",
+          )}
+          muted
+          playsInline
+          preload={hovering ? "auto" : "none"}
+          disablePictureInPicture
+        />
+      ) : null}
     </div>
   );
 }

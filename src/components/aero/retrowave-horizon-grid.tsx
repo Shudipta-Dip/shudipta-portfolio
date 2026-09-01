@@ -27,6 +27,10 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
+    // A static CSS grid is used on touch-first devices. A permanent canvas
+    // animation competes with scrolling and video decoding on mobile GPUs.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -187,8 +191,10 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
 
       drawFrame(deltaMs);
 
-      if (!reducedMotion) {
+      if (!reducedMotion && !document.hidden) {
         rafRef.current = requestAnimationFrame(loop);
+      } else {
+        rafRef.current = 0;
       }
     };
 
@@ -197,7 +203,7 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
       lastFrameTime = 0;
       if (reducedMotion) {
         drawFrame(0);
-      } else {
+      } else if (!document.hidden) {
         rafRef.current = requestAnimationFrame(loop);
       }
     };
@@ -226,7 +232,12 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
     };
 
     const onVisibilityChange = () => {
-      if (!document.hidden) startLoop();
+      if (document.hidden) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      } else {
+        startLoop();
+      }
     };
 
     motionQuery.addEventListener("change", onMotionChange);

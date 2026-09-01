@@ -1000,3 +1000,38 @@
     opacity: 0;
   }
 }
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .caustics,
+  .aero-floating-glyphs,
+  .aero-lens-bokeh,
+  .animate-drift {
+    animation: none !important;
+  }
+
+  .aero-floating-glyphs,
+  .aero-lens-bokeh {
+    display: none;
+  }
+
+  .glass-panel,
+  .glass-shell,
+  .aero-shortcut,
+  .gel-surface,
+  .chip-gel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .glass-panel {
+    background: rgb(255 255 255 / 0.88);
+  }
+
+  .glass-shell {
+    background: rgb(239 250 255 / 0.94);
+  }
+
+  .media-skeleton-shimmer {
+    animation: none;
+  }
+}

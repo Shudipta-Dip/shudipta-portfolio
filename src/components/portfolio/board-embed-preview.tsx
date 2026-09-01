@@ -31,12 +31,22 @@ export function BoardEmbedPreview({
   const rootRef = useRef<HTMLDivElement>(null);
   const visibleRef = useRef(false);
   const loadedRef = useRef(false);
+  const [canLoadEmbed, setCanLoadEmbed] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedReady, setEmbedReady] = useState(false);
 
   useEffect(() => {
+    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanLoadEmbed(query.matches);
+
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    if (!root || !canLoadEmbed) return;
 
     let idleTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -84,7 +94,7 @@ export function BoardEmbedPreview({
       window.removeEventListener("touchmove", scheduleLoad);
       clearTimeout(idleTimer);
     };
-  }, []);
+  }, [canLoadEmbed]);
 
   return (
     <div

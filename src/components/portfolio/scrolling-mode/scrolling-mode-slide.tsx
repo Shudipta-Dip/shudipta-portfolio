@@ -14,7 +14,6 @@ import { ReelsContentShell } from "./reels-content-shell";
 type ScrollingModeSlideProps = {
   project: ProjectWithMedia;
   isActive: boolean;
-  isNearby: boolean;
   panelState: PanelState;
   soundEnabled: boolean;
   onPanelAdvance: () => void;
@@ -38,7 +37,6 @@ const metadataPanelClass =
 export function ScrollingModeSlide({
   project,
   isActive,
-  isNearby,
   panelState,
   soundEnabled,
   onPanelAdvance,
@@ -58,7 +56,6 @@ export function ScrollingModeSlide({
   const showExpanded = panelState === "expanded";
   const needsReadabilityFade =
     showMetadata && isVertical && (panelState === "default" || panelState === "expanded");
-  const shouldWarmMedia = isActive || isNearby;
   const posterUrl = cover?.posterUrl;
   const previewSrc = isVideo ? posterUrl ?? cover?.url : cover?.url;
 
@@ -181,8 +178,8 @@ export function ScrollingModeSlide({
                   width={cover!.width}
                   height={cover!.height}
                   decoding="async"
-                  loading={shouldWarmMedia ? "eager" : "lazy"}
-                  fetchPriority={isActive ? "high" : shouldWarmMedia ? "high" : "auto"}
+                  loading={isActive ? "eager" : "lazy"}
+                  fetchPriority={isActive ? "high" : "auto"}
                   className={cn(
                     "absolute inset-0 z-[2] block size-full object-contain transition-opacity duration-200",
                     frameReady ? "opacity-100" : "opacity-0",
@@ -193,7 +190,7 @@ export function ScrollingModeSlide({
                 />
               ) : null}
 
-              {isVideo && shouldWarmMedia ? (
+              {isVideo && isActive ? (
                 <video
                   ref={videoRef}
                   src={cover!.url}
@@ -201,7 +198,7 @@ export function ScrollingModeSlide({
                   playsInline
                   muted
                   loop
-                  preload={isActive ? "auto" : "auto"}
+                  preload="metadata"
                   width={cover!.width}
                   height={cover!.height}
                   className={cn(

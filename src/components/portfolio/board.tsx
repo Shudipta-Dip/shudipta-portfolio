@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
 
@@ -15,7 +16,14 @@ import {
 import { MasonryGrid } from "@/components/portfolio/masonry-grid";
 import { HeroThemeMusic } from "@/components/aero/hero-theme-music";
 import { ScrollingModeLauncher } from "@/components/portfolio/scrolling-mode/scrolling-mode-launcher";
-import { ScrollingModeOverlay } from "@/components/portfolio/scrolling-mode/scrolling-mode-overlay";
+
+const ScrollingModeOverlay = dynamic(
+  () =>
+    import("@/components/portfolio/scrolling-mode/scrolling-mode-overlay").then(
+      (module) => module.ScrollingModeOverlay,
+    ),
+  { ssr: false },
+);
 
 function columnCountForGrid(grid: HTMLElement) {
   const fromAttr = Number(grid.getAttribute("data-masonry-columns"));
@@ -65,6 +73,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
     if (!grid) return;
 
     const desktop = window.matchMedia("(min-width: 768px)");
+    let frame = 0;
 
     const updateLauncher = () => {
       if (scrollingModeOpen) {
@@ -95,13 +104,22 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
       );
     };
 
+    const scheduleLauncherUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        updateLauncher();
+      });
+    };
+
     updateLauncher();
-    window.addEventListener("scroll", updateLauncher, { passive: true });
+    window.addEventListener("scroll", scheduleLauncherUpdate, { passive: true });
     window.addEventListener("resize", updateLauncher);
     desktop.addEventListener("change", updateLauncher);
 
     return () => {
-      window.removeEventListener("scroll", updateLauncher);
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleLauncherUpdate);
       window.removeEventListener("resize", updateLauncher);
       desktop.removeEventListener("change", updateLauncher);
     };

@@ -487,6 +487,38 @@
   color: var(--foreground);
 }
 
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  [data-theme="retrowave"] body {
+    background-image: none;
+    background-attachment: scroll;
+  }
+
+  [data-theme="retrowave"] .rw-starfield {
+    animation: none;
+  }
+
+  [data-theme="retrowave"] .rw-horizon-grid-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgb(0 240 255 / 0.2) 1px, transparent 1px) 0 100% / 100% 3rem,
+      linear-gradient(90deg, rgb(255 45 149 / 0.18) 1px, transparent 1px) 50% 100% / 3rem 100%;
+    mask-image: linear-gradient(to bottom, transparent, black 35%);
+    opacity: 0.75;
+  }
+
+  [data-theme="retrowave"] .glass-panel,
+  [data-theme="retrowave"] .glass-shell,
+  [data-theme="retrowave"] .aero-shortcut,
+  [data-theme="retrowave"] .theme-switcher-menu-portal,
+  [data-theme="retrowave"] .scrolling-mode-launcher-btn {
+    background: rgb(8 12 28 / 0.92);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 [data-theme="retrowave"] .text-muted-foreground,
 [data-theme="retrowave"] [data-slot="card-description"],
 [data-theme="retrowave"] [class*="text-muted-foreground"] {

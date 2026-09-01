@@ -159,7 +159,7 @@ export function MasonryGrid({ projects, className, gridRef }: MasonryGridProps) 
                 key={project.slug}
                 data-work-card
                 data-work-index={sourceIndex}
-                className="break-inside-avoid"
+                className="break-inside-avoid [content-visibility:auto] [contain-intrinsic-size:auto_24rem]"
               >
                 <ProjectCard project={project} />
               </div>

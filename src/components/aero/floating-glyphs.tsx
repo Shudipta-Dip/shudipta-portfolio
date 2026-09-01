@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 const GLYPH_SIZE = "w-[400px] max-w-[92vw]";
 
 const FLOATING_GLYPHS = [
@@ -40,6 +44,19 @@ const FLOATING_GLYPHS = [
 ] as const;
 
 export function FloatingGlyphs() {
+  const [showGlyphs, setShowGlyphs] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 768px) and (pointer: fine)");
+    const update = () => setShowGlyphs(query.matches);
+
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  if (!showGlyphs) return null;
+
   return (
     <div className="aero-floating-glyphs pointer-events-none absolute inset-0">
       {FLOATING_GLYPHS.map((glyph) => (

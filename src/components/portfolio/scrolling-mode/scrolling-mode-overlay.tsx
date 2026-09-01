@@ -79,14 +79,7 @@ export function ScrollingModeOverlay({
   }, [scrollableProjects.length]);
 
   useEffect(() => {
-    const warmAround = [
-      activeIndex - 2,
-      activeIndex - 1,
-      activeIndex,
-      activeIndex + 1,
-      activeIndex + 2,
-      activeIndex + 3,
-    ];
+    const warmAround = [activeIndex, activeIndex + 1];
 
     for (const index of warmAround) {
       const project = scrollableProjects[index];
@@ -186,7 +179,6 @@ export function ScrollingModeOverlay({
             <ScrollingModeSlide
               project={project}
               isActive={activeIndex === index}
-              isNearby={Math.abs(activeIndex - index) <= 2}
               panelState={getPanelState(project.slug)}
               soundEnabled={soundEnabled}
               onPanelAdvance={() => advancePanel(project.slug)}
