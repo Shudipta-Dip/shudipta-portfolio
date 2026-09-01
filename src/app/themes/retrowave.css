@@ -162,7 +162,8 @@
 
 .rw-horizon-grid-stage {
   z-index: 3;
-  contain: strict;
+  contain: layout paint;
+  transform: translateZ(0);
 }
 
 .rw-horizon-grid {

@@ -18,12 +18,14 @@ function hexToRgb(hex: string) {
 }
 
 export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef(0);
 
   useEffect(() => {
+    const container = containerRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!container || !canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -35,11 +37,53 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
     let height = 0;
     let dpr = 1;
     let offset = 0;
+    let lastFrameTime = 0;
+    let pendingWidth = 0;
+    let pendingHeight = 0;
+    let sizeDirty = true;
 
     const cyan = hexToRgb("#00f0ff");
     const magenta = hexToRgb("#ff2d95");
 
-    const drawFrame = () => {
+    const applyPendingSize = () => {
+      if (!sizeDirty) return;
+      if (pendingWidth < 1 || pendingHeight < 1) return;
+
+      const nextWidth = Math.floor(pendingWidth);
+      const nextHeight = Math.floor(pendingHeight);
+      const nextDpr = Math.min(window.devicePixelRatio || 1, 2);
+      const nextCanvasWidth = Math.floor(nextWidth * nextDpr);
+      const nextCanvasHeight = Math.floor(nextHeight * nextDpr);
+
+      if (
+        nextWidth === width &&
+        nextHeight === height &&
+        nextDpr === dpr &&
+        canvas.width === nextCanvasWidth &&
+        canvas.height === nextCanvasHeight
+      ) {
+        sizeDirty = false;
+        return;
+      }
+
+      width = nextWidth;
+      height = nextHeight;
+      dpr = nextDpr;
+      canvas.width = nextCanvasWidth;
+      canvas.height = nextCanvasHeight;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      sizeDirty = false;
+    };
+
+    const queueSize = (nextWidth: number, nextHeight: number) => {
+      if (nextWidth < 1 || nextHeight < 1) return;
+      pendingWidth = nextWidth;
+      pendingHeight = nextHeight;
+      sizeDirty = true;
+    };
+
+    const drawFrame = (deltaMs: number) => {
+      applyPendingSize();
       if (!width || !height) return;
 
       const isMobile = width < 640;
@@ -47,7 +91,8 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
       const cellDepth = Math.max(42, cellWidth * 0.66);
       const numCellsWide = Math.ceil(width / cellWidth) + 8;
       const numCellsDeep = isMobile ? 16 : 20;
-      const speed = reducedMotion ? 0 : isMobile ? 0.15 : 0.2;
+      const speedPxPerSec = reducedMotion ? 0 : isMobile ? 34 : 28;
+      const useShadow = !isMobile;
 
       const cameraX = 0;
       const cameraY = 56;
@@ -91,8 +136,12 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
 
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${lineAlpha})`;
-        ctx.shadowBlur = Math.max(0, 5 * (1 - distanceFactor));
-        ctx.shadowColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${lineAlpha * 0.45})`;
+        if (useShadow) {
+          ctx.shadowBlur = Math.max(0, 5 * (1 - distanceFactor));
+          ctx.shadowColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${lineAlpha * 0.45})`;
+        } else {
+          ctx.shadowBlur = 0;
+        }
 
         ctx.beginPath();
         ctx.moveTo(bottomLeft.x, bottomLeft.y);
@@ -113,7 +162,7 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
       ctx.fillStyle = horizonMask;
       ctx.fillRect(0, 0, width, height * 0.2);
 
-      offset += speed;
+      offset += speedPxPerSec * (deltaMs / 1000);
       if (offset >= cellDepth) offset -= cellDepth;
 
       const halfWide = Math.floor(numCellsWide / 2);
@@ -131,50 +180,80 @@ export function RetrowaveHorizonGrid({ className }: RetrowaveHorizonGridProps) {
       ctx.fillRect(0, height * 0.5, width, height * 0.5);
     };
 
-    const loop = () => {
-      drawFrame();
+    const loop = (now: number) => {
+      if (!lastFrameTime) lastFrameTime = now;
+      const deltaMs = Math.min(48, now - lastFrameTime);
+      lastFrameTime = now;
+
+      drawFrame(deltaMs);
+
       if (!reducedMotion) {
+        rafRef.current = requestAnimationFrame(loop);
+      }
+    };
+
+    const startLoop = () => {
+      cancelAnimationFrame(rafRef.current);
+      lastFrameTime = 0;
+      if (reducedMotion) {
+        drawFrame(0);
+      } else {
         rafRef.current = requestAnimationFrame(loop);
       }
     };
 
     const onMotionChange = (event: MediaQueryListEvent) => {
       reducedMotion = event.matches;
-      cancelAnimationFrame(rafRef.current);
-      if (reducedMotion) {
-        drawFrame();
-      } else {
-        rafRef.current = requestAnimationFrame(loop);
-      }
+      startLoop();
     };
 
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.getBoundingClientRect();
-      width = Math.max(1, rect.width);
-      height = Math.max(1, rect.height);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      if (reducedMotion) drawFrame();
+    const measureContainer = () => {
+      queueSize(container.clientWidth, container.clientHeight);
+    };
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      queueSize(entry.contentRect.width, entry.contentRect.height);
+    });
+
+    let kicked = false;
+
+    const kickLoopOnce = () => {
+      if (kicked || reducedMotion) return;
+      kicked = true;
+      startLoop();
+    };
+
+    const onVisibilityChange = () => {
+      if (!document.hidden) startLoop();
     };
 
     motionQuery.addEventListener("change", onMotionChange);
-    resize();
+    observer.observe(container);
+    window.addEventListener("resize", measureContainer);
+    window.addEventListener("touchstart", kickLoopOnce, { passive: true });
+    window.addEventListener("pointerdown", kickLoopOnce, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
-    window.addEventListener("resize", resize);
-
-    loop();
+    measureContainer();
+    startLoop();
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", measureContainer);
+      window.removeEventListener("touchstart", kickLoopOnce);
+      window.removeEventListener("pointerdown", kickLoopOnce);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       motionQuery.removeEventListener("change", onMotionChange);
       cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     };
   }, []);
 
-  return <canvas ref={canvasRef} className={className} aria-hidden />;
+  return (
+    <div ref={containerRef} className={className}>
+      <canvas ref={canvasRef} className="block h-full w-full" aria-hidden />
+    </div>
+  );
 }
