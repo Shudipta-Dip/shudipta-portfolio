@@ -836,9 +836,14 @@
 
 /* ── Nav shell accent ─────────────────────────────────────────────── */
 
-[data-theme="retrowave"] .glass-shell.rounded-full {
-  border-radius: 999px !important;
+[data-theme="retrowave"] .site-header-bar {
   border-bottom: 1px solid rgb(255 45 149 / 0.35);
+}
+
+@media (min-width: 640px) {
+  [data-theme="retrowave"] .site-header-bar {
+    border-radius: 999px !important;
+  }
 }
 
 [data-theme="retrowave"] header a.font-heading {
