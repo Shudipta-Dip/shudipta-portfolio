@@ -143,11 +143,11 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
         <div className="glass-shell mb-5 overflow-visible rounded-[2rem]">
           <div className="flex flex-col gap-4 px-5 py-6 sm:px-7 md:flex-row md:items-center md:justify-between md:gap-8 md:pr-8">
             <div className="min-w-0 flex-1">
-              <p className="flex items-center gap-1.5 text-xs font-semibold tracking-[0.2em] text-sky-deep uppercase">
+              <p className="board-hero-eyebrow flex items-center gap-1.5 text-xs font-semibold tracking-[0.2em] text-sky-deep uppercase">
                 <MapPin className="size-3.5" />
                 {profile.location} · Creative + data
               </p>
-              <h1 className="font-heading mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h1 className="board-hero-name font-heading mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
                 {profile.name}
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -157,6 +157,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
             <HeroThemeMusic className="self-center md:self-auto" />
           </div>
         </div>
+        <div className="cap-chevron-divider" aria-hidden />
         <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
           {categoryFilters.map((filter) => (
             <CategoryShortcutButton

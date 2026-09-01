@@ -1,0 +1,673 @@
+/* Art Deco theme — activated via html[data-theme="art-deco"] */
+
+[data-theme="art-deco"] {
+  --cap-bg-deep: #0c0a08;
+  --cap-bg-panel: #121010;
+  --cap-bg-charcoal: #161412;
+  --cap-gold: #d4af37;
+  --cap-gold-bright: #f1c970;
+  --cap-gold-dark: #8c7348;
+  --cap-brass: #c5a572;
+  --cap-ivory: #f2e6cf;
+  --cap-ivory-muted: #c9baa0;
+  --cap-stone: #e8dcc8;
+  --cap-gradient-gold: linear-gradient(135deg, #f1c970 0%, #d4af37 38%, #8c7348 72%, #d4af37 100%);
+  --cap-border-hairline: 1px solid rgb(212 175 55 / 0.35);
+  --cap-shadow-gold: 0 0 24px rgb(212 175 55 / 0.12);
+
+  --sky: #d4af37;
+  --sky-deep: #f1c970;
+  --aqua: #c5a572;
+  --lime: #d4af37;
+  --meadow: #8c7348;
+  --water: #c9baa0;
+  --deep: #f2e6cf;
+
+  --background: #0c0a08;
+  --foreground: #f2e6cf;
+  --card: rgb(10 14 20 / 0.92);
+  --card-foreground: #f2e6cf;
+  --popover: rgb(10 14 20 / 0.96);
+  --popover-foreground: #f2e6cf;
+  --primary: #d4af37;
+  --primary-foreground: #050507;
+  --secondary: #8c7348;
+  --secondary-foreground: #f2e6cf;
+  --muted: rgb(212 175 55 / 0.08);
+  --muted-foreground: #c4b69e;
+  --accent: rgb(212 175 55 / 0.14);
+  --accent-foreground: #f1c970;
+  --destructive: #c45c5c;
+  --border: rgb(212 175 55 / 0.28);
+  --input: rgb(212 175 55 / 0.12);
+  --ring: #f1c970;
+
+  --shadow-gel:
+    inset 0 1px 0 rgb(242 230 207 / 0.2),
+    0 0 12px rgb(212 175 55 / 0.2);
+  --shadow-frost:
+    0 8px 28px rgb(0 0 0 / 0.45),
+    inset 0 1px 0 rgb(242 230 207 / 0.06);
+
+  --font-sans: var(--font-ad-label), "Poiret One", "Segoe UI", sans-serif;
+  --font-heading: var(--font-ad-heading), "Cinzel", "Times New Roman", serif;
+
+  --cap-stone-texture: url("/art%20deco%20texture.webp");
+}
+
+[data-theme="art-deco"] body {
+  background-color: var(--cap-bg-deep);
+  color: var(--foreground);
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  letter-spacing: 0.05em;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme="art-deco"] h1,
+[data-theme="art-deco"] h2,
+[data-theme="art-deco"] h3,
+[data-theme="art-deco"] h4 {
+  font-family: var(--font-ad-heading), "Cinzel", serif;
+  letter-spacing: 0.06em;
+}
+
+[data-theme="art-deco"] .font-heading {
+  font-family: var(--font-ad-heading), "Cinzel", serif;
+}
+
+[data-theme="art-deco"] button,
+[data-theme="art-deco"] input,
+[data-theme="art-deco"] textarea,
+[data-theme="art-deco"] [data-slot="button"],
+[data-theme="art-deco"] [data-slot="badge"] {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  letter-spacing: 0.1em;
+}
+
+/* Body copy & descriptions — open tracking + stronger Poiret for readability */
+[data-theme="art-deco"] p,
+[data-theme="art-deco"] [data-slot="card-description"],
+[data-theme="art-deco"] .text-muted-foreground,
+[data-theme="art-deco"] [class*="text-muted-foreground"] {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  color: var(--cap-ivory-muted);
+  letter-spacing: 0.065em;
+  font-weight: 600;
+  font-synthesis: weight;
+  text-shadow: 0.35px 0 0 rgb(242 230 207 / 0.22);
+}
+
+[data-theme="art-deco"] p.leading-relaxed,
+[data-theme="art-deco"] .leading-relaxed.text-muted-foreground {
+  letter-spacing: 0.085em;
+  line-height: 1.65;
+  color: #d8ccb8;
+}
+
+[data-theme="art-deco"] [data-slot="card-title"] {
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: none;
+}
+
+[data-theme="art-deco"] span:not([class*="board-hero"]):not([class*="chip"]):not([class*="shortcut"]) {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="art-deco"] label {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="art-deco"] .sky-meadow,
+[data-theme="art-deco"] .aero-floating-glyphs,
+[data-theme="art-deco"] .rw-scene {
+  display: none !important;
+}
+
+/* ── Scene — full-bleed stone texture, columns, top sunburst ───────── */
+
+.cap-scene {
+  background-color: #0c0a08;
+}
+
+.cap-vault-base {
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%, #1c1814 0%, transparent 55%),
+    linear-gradient(180deg, #14100c 0%, #0c0a08 100%);
+}
+
+/* One texture image covers the full viewport — no tiling */
+.cap-stone-tile {
+  background-image:
+    linear-gradient(rgb(24 18 12 / 0.4), rgb(16 12 8 / 0.4)),
+    var(--cap-stone-texture);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.cap-grain-overlay {
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cfilter id='g' x='0%25' y='0%25' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.55 0 0 0 0 0.55 0 0 0 0 0.58 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 280px 280px;
+}
+
+/* Fluted column shafts — left and right edges */
+.cap-column {
+  z-index: 1;
+  width: min(18vw, 220px);
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 8px,
+    rgb(242 230 207 / 0.045) 8px 9px
+  );
+  mask-image: linear-gradient(90deg, black 0%, transparent 88%);
+  opacity: 0.85;
+}
+
+.cap-column-right {
+  mask-image: linear-gradient(270deg, black 0%, transparent 88%);
+}
+
+/*
+ * Sunburst — narrow wedges, dark hub, each ray pulses on its own random schedule.
+ */
+.cap-sunburst {
+  z-index: 2;
+  pointer-events: none;
+  mask-image: radial-gradient(
+    ellipse 130% 95% at 50% 0%,
+    black 0%,
+    rgb(0 0 0 / 0.9) 20%,
+    rgb(0 0 0 / 0.5) 48%,
+    transparent 78%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 130% 95% at 50% 0%,
+    black 0%,
+    rgb(0 0 0 / 0.9) 20%,
+    rgb(0 0 0 / 0.5) 48%,
+    transparent 78%
+  );
+}
+
+.cap-sunburst-ray {
+  transform-origin: 50% 0%;
+  transform: rotate(var(--ray-angle, 0deg));
+  clip-path: polygon(50% 0%, 49.15% 100%, 50.85% 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 16%,
+    rgb(241 201 112 / 0.38) 30%,
+    rgb(212 175 55 / 0.24) 50%,
+    rgb(212 175 55 / 0.06) 68%,
+    transparent 78%
+  );
+  animation: cap-ray-pulse var(--ray-duration, 5s) ease-in-out infinite;
+  animation-delay: var(--ray-delay, 0s);
+  opacity: var(--ray-min, 0.4);
+}
+
+.cap-vignette {
+  z-index: 3;
+  background: radial-gradient(ellipse 95% 85% at 50% 45%, transparent 42%, rgb(0 0 0 / 0.58) 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 639px) {
+  .cap-grain-overlay {
+    opacity: 0.08;
+    background-size: 200px 200px;
+  }
+
+  .cap-column {
+    width: min(12vw, 72px);
+    opacity: 0.7;
+  }
+
+  .cap-sunburst-ray {
+    animation: none;
+    opacity: 0.68;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cap-sunburst-ray {
+    animation: none;
+    opacity: 0.82;
+  }
+}
+
+@media (pointer: coarse) {
+  .cap-grain-overlay {
+    display: none;
+  }
+
+  .cap-sunburst-ray,
+  .cap-sunburst-ray-static {
+    animation: none !important;
+    opacity: 0.65;
+  }
+}
+
+.cap-sunburst-ray-static {
+  animation: none !important;
+}
+
+@keyframes cap-ray-pulse {
+  0%,
+  100% {
+    opacity: var(--ray-min, 0.35);
+  }
+
+  50% {
+    opacity: var(--ray-peak, 0.85);
+  }
+}
+
+/* ── Panels & shell — flat vault frames, no glass ─────────────────── */
+
+[data-theme="art-deco"] .glass-panel,
+[data-theme="art-deco"] .glass-shell,
+[data-theme="art-deco"] [data-slot="card"],
+[data-theme="art-deco"] .site-header-bar,
+[data-theme="art-deco"] [data-slot="dialog"],
+[data-theme="art-deco"] [data-slot="tooltip"] {
+  border-radius: 0 !important;
+}
+
+[data-theme="art-deco"] .glass-panel,
+[data-theme="art-deco"] .glass-shell {
+  background: var(--cap-bg-panel);
+  border: 1px solid rgb(242 230 207 / 0.22);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+[data-theme="art-deco"] .glass-shell::before,
+[data-theme="art-deco"] .glass-shell::after {
+  display: none;
+}
+
+[data-theme="art-deco"] *:is(.glass-panel, .glass-shell, [data-slot="card"]) > img:first-child,
+[data-theme="art-deco"] *:is(.glass-panel, [data-slot="card"]) > img:last-child {
+  border-radius: 0 !important;
+}
+
+[data-theme="art-deco"] .gel-surface::before,
+[data-theme="art-deco"] .gel-surface::after {
+  display: none;
+}
+
+/* ── Hero script & eyebrows ───────────────────────────────────────── */
+
+[data-theme="art-deco"] .board-hero-eyebrow {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  letter-spacing: 0.28em;
+  color: var(--cap-gold);
+  font-weight: 400;
+  text-shadow: none;
+  text-transform: uppercase;
+}
+
+[data-theme="art-deco"] .board-hero-name {
+  font-family: var(--font-ad-script), "Pinyon Script", cursive;
+  font-size: clamp(2.5rem, 8vw, 3.75rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  background: var(--cap-gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+[data-theme="art-deco"] .hero-theme-music {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+}
+
+[data-theme="art-deco"] .hero-theme-music .text-sky-deep {
+  color: var(--cap-gold);
+  letter-spacing: 0.16em;
+}
+
+/* ── Buttons & gems ───────────────────────────────────────────────── */
+
+[data-theme="art-deco"] .gel-surface,
+[data-theme="art-deco"] [data-slot="button"].gel-surface {
+  background: var(--cap-bg-panel);
+  border: 1px solid rgb(242 230 207 / 0.28);
+  border-radius: 0 !important;
+  color: var(--cap-ivory) !important;
+  text-shadow: none;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.12);
+}
+
+[data-theme="art-deco"] .gel-surface:hover,
+[data-theme="art-deco"] [data-slot="button"].gel-surface:hover {
+  background: rgb(212 175 55 / 0.08);
+  border-color: rgb(212 175 55 / 0.55);
+  filter: none;
+  translate: 0;
+}
+
+[data-theme="art-deco"] .chip-gel {
+  border-radius: 0 !important;
+  border: 1px solid rgb(242 230 207 / 0.24);
+  background: var(--cap-bg-panel);
+  color: var(--cap-ivory);
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.1);
+}
+
+[data-theme="art-deco"] .nav-gem {
+  color: var(--cap-ivory);
+}
+
+[data-theme="art-deco"] [data-slot="button"]:not(.rounded-full),
+[data-theme="art-deco"] .nav-gem,
+[data-theme="art-deco"] .theme-switcher {
+  border-radius: 0 !important;
+}
+
+[data-theme="art-deco"] .nav-gem:hover {
+  background: rgb(212 175 55 / 0.08);
+  border-color: rgb(212 175 55 / 0.5);
+  box-shadow: var(--cap-shadow-gold);
+}
+
+[data-theme="art-deco"] .nav-gem-blue:hover {
+  color: var(--cap-gold-bright);
+}
+
+[data-theme="art-deco"] .nav-gem-deep:hover {
+  color: var(--cap-gold);
+}
+
+/* ── Shortcuts & chips ────────────────────────────────────────────── */
+
+[data-theme="art-deco"] .aero-shortcut {
+  border: 1px solid rgb(242 230 207 / 0.22);
+  border-radius: 0 !important;
+  background: var(--cap-bg-panel);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.08);
+  color: var(--cap-ivory);
+}
+
+[data-theme="art-deco"] .aero-shortcut:hover,
+[data-theme="art-deco"] .aero-shortcut-active {
+  border-color: rgb(212 175 55 / 0.55);
+  background: rgb(212 175 55 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.2);
+  translate: 0;
+}
+
+[data-theme="art-deco"] .aero-shortcut-icon {
+  border-radius: 0 !important;
+  border: 1px solid rgb(212 175 55 / 0.45);
+  background: transparent !important;
+  color: var(--cap-gold) !important;
+  box-shadow: none;
+}
+
+[data-theme="art-deco"] .aero-shortcut-icon::after {
+  display: none;
+}
+
+[data-theme="art-deco"] .aero-shortcut-blue,
+[data-theme="art-deco"] .aero-shortcut-lime,
+[data-theme="art-deco"] .aero-shortcut-aqua,
+[data-theme="art-deco"] .aero-shortcut-sun,
+[data-theme="art-deco"] .aero-shortcut-deep {
+  --shortcut-top: #f1c970;
+  --shortcut-bottom: #8c7348;
+}
+
+/* ── Intake & meta chips — museum plaque frames (not Retrowave pills) */
+
+[data-theme="art-deco"] .aero-meta-chip,
+[data-theme="art-deco"] .aero-intake-chip,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-cyan,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-lime,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-aqua,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-sun,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-meadow,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-sky,
+[data-theme="art-deco"] .aero-intake-chip.aero-chip-deep,
+[data-theme="art-deco"] .aero-chip-cyan,
+[data-theme="art-deco"] .aero-chip-lime,
+[data-theme="art-deco"] .aero-chip-aqua,
+[data-theme="art-deco"] .aero-chip-sun,
+[data-theme="art-deco"] .aero-chip-meadow,
+[data-theme="art-deco"] .aero-chip-sky,
+[data-theme="art-deco"] .aero-chip-deep {
+  border-radius: 0 !important;
+  border: 1px solid rgb(242 230 207 / 0.24);
+  background: var(--cap-bg-panel);
+  color: var(--cap-ivory);
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: none;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.1);
+}
+
+[data-theme="art-deco"] .aero-meta-chip {
+  min-height: 2rem;
+  padding: 0.3rem 0.85rem 0.3rem 0.3rem;
+  gap: 0.5rem;
+}
+
+[data-theme="art-deco"] .aero-intake-chip {
+  height: auto;
+  min-height: 1.75rem;
+  padding: 0.28rem 0.65rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+}
+
+[data-theme="art-deco"] .aero-meta-chip-icon {
+  border-radius: 0 !important;
+  border: 1px solid rgb(212 175 55 / 0.5);
+  background: transparent;
+  color: var(--cap-gold);
+  box-shadow: none;
+}
+
+[data-theme="art-deco"] .aero-meta-chip-type .aero-meta-chip-icon,
+[data-theme="art-deco"] .aero-meta-chip-org .aero-meta-chip-icon,
+[data-theme="art-deco"] .aero-meta-chip-year .aero-meta-chip-icon {
+  background: transparent;
+  color: var(--cap-gold);
+}
+
+[data-theme="art-deco"] .group\/cover .chip-gel {
+  border-radius: 0 !important;
+  color: var(--cap-gold-bright) !important;
+}
+
+[data-theme="art-deco"] .group\/cover .chip-gel svg {
+  color: var(--cap-gold);
+}
+
+/* ── Theme switcher ───────────────────────────────────────────────── */
+
+[data-theme="art-deco"] .theme-switcher-menu,
+[data-theme="art-deco"] .theme-switcher-menu-portal {
+  border: 1px solid rgb(242 230 207 / 0.22);
+  border-radius: 0 !important;
+  background: var(--cap-bg-panel);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+[data-theme="art-deco"] .theme-switcher-option:hover,
+[data-theme="art-deco"] .theme-switcher-option-active {
+  background: rgb(212 175 55 / 0.1);
+  color: var(--cap-gold-bright);
+}
+
+[data-theme="art-deco"] .theme-switcher {
+  border-radius: 0 !important;
+}
+
+/* ── Cards & hover ────────────────────────────────────────────────── */
+
+[data-theme="art-deco"] [data-slot="card"] {
+  background: var(--cap-bg-panel);
+  border: 1px solid rgb(242 230 207 / 0.22);
+  box-shadow: none;
+  transition: border-color 200ms ease-out;
+}
+
+[data-theme="art-deco"] [data-slot="card"]:hover {
+  border-color: rgb(212 175 55 / 0.5);
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.15);
+  translate: 0;
+}
+
+.cap-chevron-divider {
+  display: none;
+}
+
+[data-theme="art-deco"] .cap-chevron-divider {
+  display: block;
+  height: 2rem;
+  margin: 0.5rem 0 1.25rem;
+  background: repeating-linear-gradient(
+    90deg,
+    rgb(212 175 55 / 0.35) 0 8px,
+    transparent 8px 16px
+  );
+  mask-image: linear-gradient(90deg, transparent, black 15%, black 85%, transparent);
+  opacity: 0.6;
+}
+
+/* ── Scrolling mode ───────────────────────────────────────────────── */
+
+[data-theme="art-deco"] .reels-stage-bg {
+  background-color: var(--cap-bg-charcoal);
+  background-image:
+    linear-gradient(rgb(212 175 55 / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(212 175 55 / 0.06) 1px, transparent 1px);
+  background-size: 33.333% 33.333%;
+}
+
+[data-theme="art-deco"] .reels-slide-title {
+  font-family: var(--font-ad-script), "Pinyon Script", cursive;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  letter-spacing: 0.02em;
+  color: var(--cap-gold-bright);
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.45);
+}
+
+[data-theme="art-deco"] .scrolling-mode-launcher-btn {
+  border: 1px solid rgb(242 230 207 / 0.35);
+  border-radius: 0 !important;
+  background: var(--cap-bg-panel);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--cap-ivory) !important;
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: none;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.12);
+}
+
+[data-theme="art-deco"] .scrolling-mode-launcher-btn:hover,
+[data-theme="art-deco"] .scrolling-mode-launcher-btn:focus-visible {
+  background: rgb(212 175 55 / 0.08);
+  border-color: rgb(212 175 55 / 0.55);
+  color: var(--cap-gold-bright) !important;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.22);
+}
+
+[data-theme="art-deco"] .scrolling-mode-ripple {
+  border: 1px solid rgb(242 230 207 / 0.35);
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 0.15);
+}
+
+[data-theme="art-deco"] .reels-glass-control {
+  background: var(--cap-bg-panel);
+  border: 1px solid rgb(242 230 207 / 0.22);
+  border-radius: 0 !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="art-deco"] .media-skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgb(212 175 55 / 0.08) 45%,
+    rgb(212 175 55 / 0.14) 50%,
+    rgb(212 175 55 / 0.08) 55%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+}
+
+/* ── Dev style guide utilities ────────────────────────────────────── */
+
+.cap-panel {
+  background: var(--cap-bg-panel);
+  border: 1px solid rgb(242 230 207 / 0.22);
+  border-radius: 0;
+  padding: 1.25rem 1.5rem;
+  box-shadow: none;
+}
+
+.cap-specimen-label {
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cap-gold);
+  margin-bottom: 0.75rem;
+}
+
+.cap-ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid rgb(242 230 207 / 0.24);
+  border-radius: 0;
+  background: transparent;
+  color: var(--cap-ivory);
+  font-family: var(--font-ad-label), "Poiret One", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background 180ms ease-out, border-color 180ms ease-out;
+}
+
+.cap-ghost-btn:hover {
+  background: rgb(212 175 55 / 0.08);
+  border-color: rgb(212 175 55 / 0.55);
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  [data-theme="art-deco"] .glass-panel,
+  [data-theme="art-deco"] .glass-shell,
+  [data-theme="art-deco"] .aero-shortcut,
+  [data-theme="art-deco"] .theme-switcher-menu-portal,
+  [data-theme="art-deco"] .scrolling-mode-launcher-btn,
+  [data-theme="art-deco"] .reels-glass-control {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

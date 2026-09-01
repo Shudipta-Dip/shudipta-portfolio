@@ -1,4 +1,4 @@
-export const themes = ["frutiger", "retrowave"] as const;
+export const themes = ["frutiger", "retrowave", "art-deco"] as const;
 
 export type ThemeId = (typeof themes)[number];
 
@@ -9,6 +9,7 @@ export const DEFAULT_THEME: ThemeId = "frutiger";
 export const themeLabels: Record<ThemeId, string> = {
   frutiger: "Frutiger Aero",
   retrowave: "Retrowave",
+  "art-deco": "Art Deco",
 };
 
 export function isThemeId(value: string): value is ThemeId {

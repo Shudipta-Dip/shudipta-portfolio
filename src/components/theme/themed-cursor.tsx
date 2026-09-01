@@ -13,6 +13,10 @@ const TubesCursor = dynamic(
   () => import("@/components/aero/tubes-cursor").then((module) => module.TubesCursor),
   { ssr: false },
 );
+const DiamondCursor = dynamic(
+  () => import("@/components/aero/diamond-cursor").then((module) => module.DiamondCursor),
+  { ssr: false },
+);
 
 export function ThemedCursor() {
   const { theme } = useTheme();
@@ -28,6 +32,7 @@ export function ThemedCursor() {
   }, []);
 
   if (!finePointer) return null;
+  if (theme === "art-deco") return <DiamondCursor />;
   if (theme === "retrowave") return <TubesCursor />;
   return <BubbleCursor />;
 }

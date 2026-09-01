@@ -188,10 +188,11 @@ For each new style, create `docs/design-systems/<NAME>.md` with:
 | --- | --- |
 | Frutiger spec | `DESIGN.md` |
 | RETROWAVE spec | `docs/design-systems/RETROWAVE.md` |
+| Art Deco spec | `docs/design-systems/CAPITOLINI.md` |
 | Global CSS | `src/app/globals.css` |
 | Layout / fonts | `src/app/layout.tsx` |
 | Header | `src/components/layout/site-chrome.tsx` |
-| Scene | `src/components/aero/scene.tsx` |
+| Scene | `src/components/aero/scene.tsx`, `scene-retrowave.tsx`, `scene-art-deco.tsx` |
 | Board | `src/components/portfolio/board.tsx`, `project-card.tsx`, `masonry-grid.tsx` |
 | Media | `cover-art.tsx`, `hover-video-preview.tsx`, `media-skeleton.tsx` |
 | Embeds | `board-embed-preview.tsx`, `project-embed.tsx` |
@@ -208,3 +209,18 @@ For each new style, create `docs/design-systems/<NAME>.md` with:
 - [ ] No media loading regressions
 - [ ] Build passes
 - [ ] User sign-off before production deploy
+
+---
+
+## CAPITOLINI (Art Deco) — task order
+
+**Status:** Implemented on localhost — do not push until user approves.
+
+1. Tokens — `src/app/themes/art-deco.css`
+2. Scene — `src/components/aero/scene-art-deco.tsx`
+3. Plumbing — `src/lib/theme.ts`, `layout.tsx`, `theme-scene.tsx`, `themed-cursor.tsx`
+4. Dev style guide — `/dev/themes/art-deco`
+5. Board hooks — `board-hero-name`, `board-hero-eyebrow`, `cap-chevron-divider`
+6. Scrolling mode — `reels-slide-title`; hide hero music via `.hero-theme-music`
+7. Mobile pass — no backdrop-filter, static sunburst on coarse pointer
+8. Build + localhost QA (Frutiger / Retrowave / Art Deco switcher)

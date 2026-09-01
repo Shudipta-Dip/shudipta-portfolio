@@ -242,7 +242,7 @@ export function ScrollingModeSlide({
 
           <div className={metadataPanelClass}>
             <div className="min-w-0 space-y-2.5">
-              <h2 className="font-heading text-lg font-semibold tracking-tight text-white drop-shadow-[0_2px_8px_rgb(0_0_0/0.45)]">
+              <h2 className="reels-slide-title font-heading text-lg font-semibold tracking-tight text-white drop-shadow-[0_2px_8px_rgb(0_0_0/0.45)]">
                 {project.title}
               </h2>
               {showExpanded ? (

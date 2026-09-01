@@ -1,5 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito, Orbitron, Quicksand, Rajdhani, Share_Tech_Mono } from "next/font/google";
+import {
+  Cinzel,
+  Cinzel_Decorative,
+  Cormorant_Garamond,
+  Nunito,
+  Orbitron,
+  Pinyon_Script,
+  Poiret_One,
+  Quicksand,
+  Rajdhani,
+  Share_Tech_Mono,
+} from "next/font/google";
 import Script from "next/script";
 
 import { SiteHeader } from "@/components/layout/site-chrome";
@@ -11,6 +22,7 @@ import { THEME_STORAGE_KEY } from "@/lib/theme";
 import { profile } from "../../content/profile";
 import "./globals.css";
 import "./themes/retrowave.css";
+import "./themes/art-deco.css";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -37,6 +49,34 @@ const shareTechMono = Share_Tech_Mono({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-rw-mono",
+});
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  variable: "--font-ad-heading",
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  variable: "--font-ad-display",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-ad-body",
+});
+
+const poiretOne = Poiret_One({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-ad-label",
+});
+
+const pinyonScript = Pinyon_Script({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-ad-script",
 });
 
 const siteUrl = getSiteUrl();
@@ -99,14 +139,14 @@ export const viewport: Viewport = {
   ],
 };
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");if(t==="retrowave")document.documentElement.setAttribute("data-theme","retrowave");}catch(e){}})();`;
+const themeInitScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");if(t==="retrowave"||t==="art-deco")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${nunito.variable} ${quicksand.variable} ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable} h-full antialiased`}
+      className={`${nunito.variable} ${quicksand.variable} ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable} ${cinzel.variable} ${cinzelDecorative.variable} ${cormorant.variable} ${poiretOne.variable} ${pinyonScript.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Script id="theme-init" strategy="beforeInteractive">

@@ -129,7 +129,9 @@
   body.bubble-cursor-active,
   body.bubble-cursor-active *,
   body.tubes-cursor-active,
-  body.tubes-cursor-active * {
+  body.tubes-cursor-active *,
+  body.art-deco-cursor-active,
+  body.art-deco-cursor-active * {
     cursor: none !important;
   }
 
@@ -752,6 +754,18 @@
   }
 
   .tubes-cursor-pointer[data-visible="true"] {
+    opacity: 1;
+  }
+
+.art-deco-cursor {
+  opacity: 0;
+  will-change: transform;
+  transition: opacity 140ms ease-out;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.45));
+  contain: layout style;
+}
+
+  .art-deco-cursor[data-visible="true"] {
     opacity: 1;
   }
 
