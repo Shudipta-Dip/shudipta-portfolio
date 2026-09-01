@@ -2,13 +2,14 @@ import { Mail } from "lucide-react";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { GithubIcon, LinkedinIcon } from "@/lib/brand-icons";
 import { cn } from "@/lib/utils";
 import { profile } from "../../../content/profile";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
+    <header className="relative sticky top-0 z-40 px-3 pt-3 sm:px-6">
       <div className="glass-shell mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-full px-3 py-2 sm:px-4">
         <Link href="/" className="flex items-center gap-2 pl-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -18,6 +19,7 @@ export function SiteHeader() {
           </span>
         </Link>
         <div className="flex items-center gap-1.5">
+          <ThemeSwitcher />
           <a
             href={profile.links.linkedin}
             target="_blank"

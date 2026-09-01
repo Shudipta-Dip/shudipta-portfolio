@@ -1,7 +1,9 @@
 "use client";
 
+import { Clapperboard } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useTheme } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
 
 type ScrollingModeLauncherProps = {
@@ -12,6 +14,8 @@ type ScrollingModeLauncherProps = {
 const RIPPLE_DELAYS = [0, 0.14, 1, 1.14, 2, 2.14];
 
 export function ScrollingModeLauncher({ visible, onOpen }: ScrollingModeLauncherProps) {
+  const { theme } = useTheme();
+  const isRetrowave = theme === "retrowave";
   const [ripplesActive, setRipplesActive] = useState(false);
   const hasOpenedRef = useRef(false);
 
@@ -48,7 +52,10 @@ export function ScrollingModeLauncher({ visible, onOpen }: ScrollingModeLauncher
             <span
               key={`${delay}-${index}`}
               aria-hidden
-              className="scrolling-mode-ripple pointer-events-none absolute inset-0 rounded-full"
+              className={cn(
+                "scrolling-mode-ripple pointer-events-none absolute inset-0",
+                isRetrowave ? "rounded-lg" : "rounded-full",
+              )}
               style={{ animationDelay: `${delay}s` }}
             />
           ))
@@ -59,8 +66,14 @@ export function ScrollingModeLauncher({ visible, onOpen }: ScrollingModeLauncher
         onClick={open}
         aria-hidden={!visible}
         tabIndex={visible ? 0 : -1}
-        className="gel-surface relative z-10 min-h-11 touch-manipulation rounded-full border border-white/70 px-5 py-2.5 text-sm font-semibold text-foreground [text-shadow:0_1px_0_rgb(255_255_255/0.45)] shadow-[0_12px_28px_rgb(14_90_130/0.28)] md:px-7 md:py-3.5 md:text-base lg:px-8 lg:py-4 lg:text-lg"
+        className={cn(
+          "scrolling-mode-launcher-btn relative z-10 inline-flex min-h-11 touch-manipulation items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold md:px-7 md:py-3.5 md:text-base lg:px-8 lg:py-4 lg:text-lg",
+          isRetrowave
+            ? "rounded-lg"
+            : "gel-surface rounded-full border border-white/70 text-foreground [text-shadow:0_1px_0_rgb(255_255_255/0.45)] shadow-[0_12px_28px_rgb(14_90_130/0.28)]",
+        )}
       >
+        {isRetrowave ? <Clapperboard className="size-4 shrink-0 md:size-[1.15rem]" strokeWidth={2} /> : null}
         Scrolling mode
       </button>
     </div>

@@ -145,7 +145,7 @@ export function ScrollingModeOverlay({
   const hasAnyVideo = scrollableProjects.some((project) => project.media.cover?.kind === "video");
 
   return (
-    <div className="fixed inset-0 z-[120] overflow-hidden bg-[#0d3b4a]">
+    <div className="scrolling-mode-overlay reels-stage-bg fixed inset-0 z-[120] overflow-hidden">
       <button
         type="button"
         onClick={onClose}

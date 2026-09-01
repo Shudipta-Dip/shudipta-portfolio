@@ -13,7 +13,7 @@ import {
   projectsForScrollingMode,
 } from "@/components/portfolio/category-shortcut-button";
 import { MasonryGrid } from "@/components/portfolio/masonry-grid";
-import { HeroFrutigerCd } from "@/components/aero/hero-frutiger-cd";
+import { HeroThemeMusic } from "@/components/aero/hero-theme-music";
 import { ScrollingModeLauncher } from "@/components/portfolio/scrolling-mode/scrolling-mode-launcher";
 import { ScrollingModeOverlay } from "@/components/portfolio/scrolling-mode/scrolling-mode-overlay";
 
@@ -136,7 +136,7 @@ export function PortfolioBoard({ projects }: { projects: ProjectWithMedia[] }) {
                 {profile.headline}
               </p>
             </div>
-            <HeroFrutigerCd className="self-center md:self-auto" />
+            <HeroThemeMusic className="self-center md:self-auto" />
           </div>
         </div>
         <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">

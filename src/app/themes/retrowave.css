@@ -1,0 +1,845 @@
+/* RETROWAVE theme — activated via html[data-theme="retrowave"] */
+
+[data-theme="retrowave"] {
+  --rw-cyan: #00f0ff;
+  --rw-cyan-dim: #00a8b8;
+  --rw-magenta: #ff2d95;
+  --rw-magenta-hot: #ff6ec7;
+  --rw-bg-deep: #060812;
+  --rw-bg-mid: #0f1428;
+  --rw-sky-gradient: linear-gradient(
+    180deg,
+    #060812 0%,
+    #14082c 14%,
+    #2a1050 26%,
+    #521868 38%,
+    #8a2480 48%,
+    #b83070 58%,
+    #d84850 68%,
+    #f06838 78%,
+    #ff9048 88%,
+    #ffb060 100%
+  );
+
+  --sky: #00f0ff;
+  --sky-deep: #00d4e8;
+  --aqua: #ff2d95;
+  --lime: #ff6ec7;
+  --meadow: #ff6b35;
+  --water: #00a8b8;
+  --deep: #e8f4ff;
+
+  --background: #060812;
+  --foreground: #e8f4ff;
+  --card: rgb(8 12 28 / 0.58);
+  --card-foreground: #e8f4ff;
+  --popover: rgb(12 16 32 / 0.92);
+  --popover-foreground: #e8f4ff;
+  --primary: #00f0ff;
+  --primary-foreground: #060812;
+  --secondary: #ff2d95;
+  --secondary-foreground: #060812;
+  --muted: rgb(0 240 255 / 0.08);
+  --muted-foreground: #a8c4e8;
+  --accent: rgb(255 45 149 / 0.18);
+  --accent-foreground: #ffe066;
+  --destructive: #ff4466;
+  --border: rgb(0 240 255 / 0.22);
+  --input: rgb(0 240 255 / 0.12);
+  --ring: #00f0ff;
+
+  --shadow-gel:
+    0 0 12px rgb(0 240 255 / 0.45),
+    0 0 28px rgb(0 240 255 / 0.2),
+    inset 0 1px 0 rgb(255 255 255 / 0.25);
+  --shadow-frost:
+    0 8px 32px rgb(0 0 0 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+
+  --font-sans: var(--font-rw-body), "Rajdhani", "Segoe UI", sans-serif;
+  --font-heading: var(--font-rw-display), "Orbitron", "Trebuchet MS", sans-serif;
+}
+
+[data-theme="retrowave"] h1,
+[data-theme="retrowave"] h2,
+[data-theme="retrowave"] h3,
+[data-theme="retrowave"] h4 {
+  letter-spacing: 0.04em;
+}
+
+[data-theme="retrowave"] .font-heading.text-3xl,
+[data-theme="retrowave"] .font-heading.text-4xl,
+[data-theme="retrowave"] h1.font-heading {
+  text-shadow:
+    0 0 8px rgb(0 240 255 / 0.55),
+    0 0 22px rgb(0 240 255 / 0.28);
+}
+
+[data-theme="retrowave"] .sky-meadow,
+[data-theme="retrowave"] .aero-floating-glyphs {
+  display: none !important;
+}
+
+.rw-scene {
+  background-color: var(--rw-bg-deep);
+  background-image: var(--rw-sky-gradient);
+}
+
+.rw-starfield {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 0.9), transparent),
+    radial-gradient(1px 1px at 28% 42%, rgb(255 255 255 / 0.65), transparent),
+    radial-gradient(1.5px 1.5px at 44% 12%, rgb(255 255 255 / 0.85), transparent),
+    radial-gradient(1px 1px at 62% 28%, rgb(255 255 255 / 0.55), transparent),
+    radial-gradient(1px 1px at 78% 8%, rgb(255 255 255 / 0.75), transparent),
+    radial-gradient(1.5px 1.5px at 88% 38%, rgb(255 255 255 / 0.7), transparent),
+    radial-gradient(1px 1px at 8% 52%, rgb(255 255 255 / 0.5), transparent),
+    radial-gradient(1px 1px at 22% 72%, rgb(255 255 255 / 0.6), transparent),
+    radial-gradient(1px 1px at 52% 58%, rgb(255 255 255 / 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 72% 62%, rgb(255 255 255 / 0.8), transparent),
+    radial-gradient(1px 1px at 92% 68%, rgb(255 255 255 / 0.55), transparent),
+    radial-gradient(1px 1px at 38% 82%, rgb(255 255 255 / 0.4), transparent),
+    radial-gradient(1px 1px at 58% 88%, rgb(255 255 255 / 0.65), transparent);
+  animation: rw-star-drift 90s linear infinite;
+}
+
+.rw-vignette {
+  background: radial-gradient(ellipse 90% 70% at 50% 45%, transparent 48%, rgb(0 0 0 / 0.42) 100%);
+  z-index: 4;
+}
+
+.rw-sunset-wrap {
+  pointer-events: none;
+  opacity: 0.38;
+  z-index: 1;
+}
+
+.rw-sunset {
+  position: relative;
+  width: min(88vw, 32rem);
+  aspect-ratio: 2 / 1;
+  background: linear-gradient(
+    180deg,
+    #ff6ec7 0%,
+    #ff6ec7 14%,
+    #ff2d95 14%,
+    #ff2d95 28%,
+    #ff6b35 28%,
+    #ff6b35 52%,
+    #ffb347 52%,
+    #ffb347 76%,
+    #ffe066 76%,
+    #ffe066 100%
+  );
+  clip-path: ellipse(50% 100% at 50% 100%);
+  filter: blur(18px) drop-shadow(0 0 20px rgb(255 45 149 / 0.18));
+}
+
+.rw-sunset-scanlines {
+  background: repeating-linear-gradient(
+    180deg,
+    rgb(0 0 0 / 0.28) 0,
+    rgb(0 0 0 / 0.28) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.45;
+}
+
+.rw-horizon-glow {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(0 240 255 / 0.45) 20%,
+    rgb(255 45 149 / 0.5) 50%,
+    rgb(0 240 255 / 0.45) 80%,
+    transparent
+  );
+  box-shadow: 0 0 16px rgb(255 45 149 / 0.28);
+  z-index: 2;
+}
+
+.rw-horizon-grid-stage {
+  z-index: 3;
+  contain: strict;
+}
+
+.rw-horizon-grid {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes rw-star-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-2%, -1%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rw-starfield {
+    animation: none;
+  }
+}
+
+[data-theme="retrowave"] .glass-panel {
+  background: linear-gradient(180deg, rgb(12 18 40 / 0.72) 0%, rgb(8 12 28 / 0.52) 100%);
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+  border: 1px solid rgb(0 240 255 / 0.28);
+  box-shadow:
+    var(--shadow-frost),
+    0 0 20px rgb(0 240 255 / 0.08);
+}
+
+[data-theme="retrowave"] .glass-shell {
+  background:
+    linear-gradient(125deg, rgb(0 240 255 / 0.1) 0%, transparent 42%),
+    linear-gradient(180deg, rgb(12 18 40 / 0.75) 0%, rgb(8 12 28 / 0.55) 100%);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgb(0 240 255 / 0.32);
+  border-bottom-color: rgb(255 45 149 / 0.2);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    0 0 24px rgb(0 240 255 / 0.12),
+    0 12px 36px rgb(0 0 0 / 0.45);
+}
+
+[data-theme="retrowave"] .glass-shell::before {
+  background:
+    linear-gradient(118deg, rgb(0 240 255 / 0.12) 0%, transparent 34%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.06) 0%, transparent 24%);
+}
+
+[data-theme="retrowave"] .glass-shell::after {
+  border-color: rgb(0 240 255 / 0.15);
+  border-top-color: rgb(0 240 255 / 0.35);
+}
+
+[data-theme="retrowave"] .gel-surface {
+  background: linear-gradient(180deg, #5cf0ff 0%, #00d4e8 48%, #0098aa 100%);
+  color: #060812;
+  text-shadow: none;
+  box-shadow: var(--shadow-gel);
+}
+
+[data-theme="retrowave"] .gel-lime {
+  background: linear-gradient(180deg, #ff6ec7 0%, #ff2d95 48%, #c4126a 100%);
+  color: #060812;
+  text-shadow: none;
+  box-shadow:
+    0 0 12px rgb(255 45 149 / 0.45),
+    0 0 28px rgb(255 45 149 / 0.2),
+    inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+
+[data-theme="retrowave"] [data-slot="badge"],
+[data-theme="retrowave"] .group\/badge {
+  border-radius: 0.375rem !important;
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] [data-slot="badge"].gel-surface,
+[data-theme="retrowave"] [data-slot="badge"].chip-gel {
+  color: #060812;
+}
+
+[data-theme="retrowave"] [data-slot="button"].aero-shortcut {
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] [data-slot="button"].aero-shortcut .opacity-65 {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+
+[data-theme="retrowave"] .chip-gel {
+  border: 1px solid rgb(0 240 255 / 0.35);
+  background: linear-gradient(180deg, rgb(0 240 255 / 0.14), rgb(8 12 28 / 0.55));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 0 10px rgb(0 240 255 / 0.1);
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] .theme-switcher-menu {
+  border: 1px solid rgb(0 240 255 / 0.32);
+  background: linear-gradient(180deg, rgb(12 18 40 / 0.96), rgb(8 12 28 / 0.94));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 0 16px rgb(0 240 255 / 0.12),
+    0 10px 24px rgb(0 0 0 / 0.45);
+}
+
+[data-theme="retrowave"] .theme-switcher-menu-portal {
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+}
+
+[data-theme="retrowave"] .theme-switcher-option {
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] .theme-switcher-option:hover,
+[data-theme="retrowave"] .theme-switcher-option:focus-visible {
+  background: rgb(0 240 255 / 0.1);
+}
+
+[data-theme="retrowave"] .theme-switcher-option-active {
+  background: rgb(0 240 255 / 0.14);
+  color: var(--rw-cyan);
+}
+
+[data-theme="retrowave"] .nav-gem:hover {
+  border-color: rgb(0 240 255 / 0.5);
+  box-shadow: 0 0 12px rgb(0 240 255 / 0.25);
+}
+
+[data-theme="retrowave"] .nav-gem-blue:hover {
+  background: linear-gradient(180deg, rgb(0 240 255 / 0.25), rgb(0 168 184 / 0.15));
+}
+
+[data-theme="retrowave"] .nav-gem-deep:hover {
+  background: linear-gradient(180deg, rgb(255 45 149 / 0.22), rgb(196 18 106 / 0.12));
+}
+
+[data-theme="retrowave"] .aero-shortcut {
+  border: 1px solid rgb(0 240 255 / 0.28);
+  background:
+    linear-gradient(125deg, rgb(0 240 255 / 0.08) 0%, transparent 40%),
+    linear-gradient(180deg, rgb(12 18 40 / 0.65), rgb(8 12 28 / 0.45));
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 0 16px rgb(0 240 255 / 0.06);
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] .aero-shortcut:hover,
+[data-theme="retrowave"] .aero-shortcut-active {
+  border-color: rgb(0 240 255 / 0.55);
+  background:
+    linear-gradient(125deg, rgb(0 240 255 / 0.16) 0%, transparent 42%),
+    linear-gradient(180deg, rgb(16 24 48 / 0.82), rgb(8 12 28 / 0.55));
+  box-shadow:
+    inset 0 1px 0 rgb(0 240 255 / 0.2),
+    0 0 20px rgb(0 240 255 / 0.18);
+}
+
+[data-theme="retrowave"] .aero-shortcut-active {
+  translate: 0 -2px;
+}
+
+[data-theme="retrowave"] .aero-shortcut-blue {
+  --shortcut-top: #00f0ff;
+  --shortcut-bottom: #0088aa;
+}
+
+[data-theme="retrowave"] .aero-shortcut-lime {
+  --shortcut-top: #ff6ec7;
+  --shortcut-bottom: #c4126a;
+}
+
+[data-theme="retrowave"] .aero-shortcut-aqua {
+  --shortcut-top: #00f0ff;
+  --shortcut-bottom: #ff2d95;
+}
+
+[data-theme="retrowave"] .aero-shortcut-sun {
+  --shortcut-top: #ffb347;
+  --shortcut-bottom: #ff6b35;
+}
+
+[data-theme="retrowave"] .aero-shortcut-deep {
+  --shortcut-top: #ff2d95;
+  --shortcut-bottom: #6a1a8a;
+}
+
+[data-theme="retrowave"] .aero-meta-chip,
+[data-theme="retrowave"] .aero-intake-chip {
+  border: 1px solid rgb(0 240 255 / 0.25);
+  background: linear-gradient(180deg, rgb(12 18 40 / 0.75), rgb(8 12 28 / 0.55));
+  color: #e8f4ff;
+  box-shadow: 0 0 8px rgb(0 240 255 / 0.06);
+}
+
+[data-theme="retrowave"] .aero-chip-cyan {
+  background: linear-gradient(180deg, rgb(0 240 255 / 0.22), rgb(0 120 140 / 0.35));
+}
+
+[data-theme="retrowave"] .aero-chip-lime {
+  background: linear-gradient(180deg, rgb(255 110 199 / 0.22), rgb(196 18 106 / 0.35));
+}
+
+[data-theme="retrowave"] .aero-chip-aqua {
+  background: linear-gradient(180deg, rgb(0 240 255 / 0.18), rgb(255 45 149 / 0.28));
+}
+
+[data-theme="retrowave"] .aero-chip-sun {
+  background: linear-gradient(180deg, rgb(255 179 71 / 0.25), rgb(255 107 53 / 0.35));
+}
+
+[data-theme="retrowave"] .aero-chip-meadow {
+  background: linear-gradient(180deg, rgb(255 107 53 / 0.22), rgb(196 50 80 / 0.32));
+}
+
+[data-theme="retrowave"] .aero-chip-sky {
+  background: linear-gradient(180deg, rgb(0 240 255 / 0.2), rgb(0 136 170 / 0.32));
+}
+
+[data-theme="retrowave"] .aero-chip-deep {
+  background: linear-gradient(180deg, rgb(255 45 149 / 0.2), rgb(80 40 120 / 0.35));
+}
+
+[data-theme="retrowave"] .group\/card:hover {
+  box-shadow:
+    0 0 24px rgb(0 240 255 / 0.15),
+    0 18px 50px rgb(0 0 0 / 0.45);
+}
+
+[data-theme="retrowave"] [data-slot="card-footer"] {
+  border-color: rgb(0 240 255 / 0.15);
+  background: rgb(0 240 255 / 0.05);
+}
+
+[data-theme="retrowave"] .reels-stage-bg,
+[data-theme="retrowave"] .scrolling-mode-overlay {
+  background-color: var(--rw-bg-deep);
+  background-image: var(--rw-sky-gradient);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+[data-theme="retrowave"] .reels-glass-control {
+  background:
+    linear-gradient(125deg, rgb(0 240 255 / 0.12) 0%, transparent 42%),
+    linear-gradient(180deg, rgb(12 18 40 / 0.85), rgb(8 12 28 / 0.65));
+  border: 1px solid rgb(0 240 255 / 0.4);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    0 0 16px rgb(0 240 255 / 0.2);
+}
+
+[data-theme="retrowave"] .reels-scrubber {
+  accent-color: #00f0ff;
+}
+
+[data-theme="retrowave"] .reels-scrubber::-webkit-slider-thumb {
+  background: #00f0ff;
+  box-shadow: 0 0 8px rgb(0 240 255 / 0.6);
+}
+
+[data-theme="retrowave"] .reels-scrubber::-moz-range-thumb {
+  background: #00f0ff;
+}
+
+[data-theme="retrowave"] .media-skeleton-card {
+  background: #0a0e1a;
+}
+
+[data-theme="retrowave"] .media-skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgb(255 45 149 / 0.08) 42%,
+    rgb(0 240 255 / 0.18) 50%,
+    rgb(255 45 149 / 0.08) 58%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+}
+
+[data-theme="retrowave"] .media-skeleton-card .media-skeleton-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgb(255 45 149 / 0.04) 0%,
+    rgb(0 240 255 / 0.14) 45%,
+    rgb(255 45 149 / 0.04) 90%
+  );
+  background-size: 220% 100%;
+}
+
+
+[data-theme="retrowave"] .aero-app-icon,
+[data-theme="retrowave"] .aero-icon-lens {
+  border: 1px solid rgb(0 240 255 / 0.45);
+  background:
+    linear-gradient(160deg, rgb(0 240 255 / 0.2), transparent 38%),
+    linear-gradient(180deg, rgb(0 200 220 / 0.85), rgb(120 20 100 / 0.9));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    0 0 16px rgb(0 240 255 / 0.25);
+}
+
+/* ── Base text & contrast ─────────────────────────────────────────── */
+
+[data-theme="retrowave"] body {
+  background-color: var(--rw-bg-deep);
+  background-image: var(--rw-sky-gradient);
+  background-attachment: fixed;
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] .text-muted-foreground,
+[data-theme="retrowave"] [data-slot="card-description"],
+[data-theme="retrowave"] [class*="text-muted-foreground"] {
+  color: var(--muted-foreground);
+}
+
+[data-theme="retrowave"] .text-sky-deep,
+[data-theme="retrowave"] [class*="text-sky-deep"] {
+  color: var(--sky-deep);
+  text-shadow: 0 0 10px rgb(0 240 255 / 0.35);
+}
+
+[data-theme="retrowave"] .font-heading.text-sm,
+[data-theme="retrowave"] .font-heading.text-base,
+[data-theme="retrowave"] [data-slot="card-title"] {
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] a:not([class*="gel-surface"]):not([class*="button"]) {
+  color: inherit;
+}
+
+/* ── Radii — sharper synth panels, not Aero pills ─────────────────── */
+
+[data-theme="retrowave"] .glass-panel,
+[data-theme="retrowave"] .glass-shell,
+[data-theme="retrowave"] [data-slot="card"],
+[data-theme="retrowave"] [data-slot="dialog-content"] {
+  border-radius: 1.25rem !important;
+}
+
+[data-theme="retrowave"] .chip-gel,
+[data-theme="retrowave"] .aero-meta-chip,
+[data-theme="retrowave"] .aero-intake-chip,
+[data-theme="retrowave"] .theme-switcher {
+  border-radius: 0.375rem !important;
+}
+
+[data-theme="retrowave"] .aero-shortcut {
+  border-radius: 0.625rem !important;
+}
+
+[data-theme="retrowave"] .aero-shortcut-icon {
+  border-radius: 0.375rem !important;
+}
+
+[data-theme="retrowave"] [data-slot="button"]:not(.rounded-full) {
+  border-radius: 0.5rem !important;
+}
+
+[data-theme="retrowave"] [data-slot="button"] {
+  border-radius: 0.5rem !important;
+}
+
+[data-theme="retrowave"] .group\/cover .gel-surface,
+[data-theme="retrowave"] .group\/cover .chip-gel {
+  border-radius: 0.375rem !important;
+}
+
+[data-theme="retrowave"] *:is(.glass-panel, [data-slot="card"]) > img:first-child {
+  border-top-left-radius: 1.25rem !important;
+  border-top-right-radius: 1.25rem !important;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────── */
+
+[data-theme="retrowave"] [data-slot="button"].chip-gel,
+[data-theme="retrowave"] [data-slot="button"]:is(.chip-gel, [class*="outline"], [class*="frost"]) {
+  border: 1px solid rgb(0 240 255 / 0.45);
+  background: rgb(0 240 255 / 0.06);
+  color: var(--foreground);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 0 12px rgb(0 240 255 / 0.08);
+}
+
+[data-theme="retrowave"] [data-slot="button"].chip-gel:hover,
+[data-theme="retrowave"] [data-slot="button"]:is(.chip-gel, [class*="outline"], [class*="frost"]):hover {
+  background: rgb(0 240 255 / 0.14);
+  border-color: rgb(0 240 255 / 0.65);
+  box-shadow:
+    inset 0 1px 0 rgb(0 240 255 / 0.15),
+    0 0 18px rgb(0 240 255 / 0.22);
+  color: #fff;
+}
+
+[data-theme="retrowave"] [data-slot="button"].nav-gem {
+  color: var(--foreground);
+  border-radius: 0.5rem !important;
+}
+
+[data-theme="retrowave"] [data-slot="button"].nav-gem-blue,
+[data-theme="retrowave"] a.nav-gem-blue {
+  color: var(--rw-cyan);
+}
+
+[data-theme="retrowave"] [data-slot="button"].nav-gem-deep,
+[data-theme="retrowave"] a.nav-gem-deep {
+  color: var(--rw-magenta-hot);
+}
+
+[data-theme="retrowave"] [data-slot="button"].nav-gem:hover,
+[data-theme="retrowave"] a.nav-gem:hover {
+  color: #fff;
+}
+
+[data-theme="retrowave"] [data-slot="button"].gel-surface,
+[data-theme="retrowave"] a.gel-surface[data-slot="button"],
+[data-theme="retrowave"] [data-slot="button"]:is(.gel-surface, [class*="gel"]) {
+  border-color: rgb(0 240 255 / 0.55) !important;
+  color: #060812 !important;
+  text-shadow: none !important;
+}
+
+[data-theme="retrowave"] [data-slot="button"].gel-lime,
+[data-theme="retrowave"] .gel-lime[data-slot="button"] {
+  border-color: rgb(255 45 149 / 0.55) !important;
+  color: #060812 !important;
+}
+
+[data-theme="retrowave"] [data-slot="button"][class*="ghost"]:hover,
+[data-theme="retrowave"] a[class*="ghost"]:hover {
+  background: rgb(0 240 255 / 0.1);
+  color: #fff;
+}
+
+/* Scrolling mode launcher — neon outline CTA */
+[data-theme="retrowave"] .scrolling-mode-launcher-btn {
+  border: 1px solid rgb(0 240 255 / 0.55);
+  border-bottom-color: rgb(255 45 149 / 0.45);
+  border-radius: 0.5rem;
+  background: rgb(8 12 28 / 0.72);
+  backdrop-filter: blur(14px) saturate(1.25);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  color: var(--rw-cyan);
+  font-family: var(--font-heading);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgb(0 240 255 / 0.45);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 0 18px rgb(0 240 255 / 0.18),
+    0 8px 28px rgb(0 0 0 / 0.4);
+}
+
+[data-theme="retrowave"] .scrolling-mode-launcher-btn svg {
+  color: var(--rw-magenta-hot);
+  filter: drop-shadow(0 0 6px rgb(255 110 199 / 0.55));
+}
+
+[data-theme="retrowave"] .scrolling-mode-launcher-btn:hover,
+[data-theme="retrowave"] .scrolling-mode-launcher-btn:focus-visible {
+  border-color: rgb(0 240 255 / 0.85);
+  background: rgb(0 240 255 / 0.1);
+  box-shadow:
+    inset 0 0 24px rgb(0 240 255 / 0.08),
+    0 0 28px rgb(0 240 255 / 0.32),
+    0 8px 28px rgb(0 0 0 / 0.4);
+}
+
+[data-theme="retrowave"] .scrolling-mode-ripple {
+  border: 2px solid rgb(0 240 255 / 0.45);
+  border-radius: 0.5rem;
+  box-shadow:
+    0 0 0 1px rgb(255 45 149 / 0.22),
+    inset 0 0 14px rgb(0 240 255 / 0.12);
+}
+
+/* ── Intake & meta chips — light text on dark glass ───────────────── */
+
+[data-theme="retrowave"] .aero-meta-chip,
+[data-theme="retrowave"] .aero-intake-chip,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-cyan,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-lime,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-aqua,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-sun,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-meadow,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-sky,
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-deep,
+[data-theme="retrowave"] .aero-chip-cyan,
+[data-theme="retrowave"] .aero-chip-lime,
+[data-theme="retrowave"] .aero-chip-aqua,
+[data-theme="retrowave"] .aero-chip-sun,
+[data-theme="retrowave"] .aero-chip-meadow,
+[data-theme="retrowave"] .aero-chip-sky,
+[data-theme="retrowave"] .aero-chip-deep {
+  color: #e8f4ff;
+  text-shadow: none;
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-cyan,
+[data-theme="retrowave"] .aero-chip-cyan {
+  border-left: 3px solid var(--rw-cyan);
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-lime,
+[data-theme="retrowave"] .aero-chip-lime {
+  border-left: 3px solid var(--rw-magenta-hot);
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-aqua,
+[data-theme="retrowave"] .aero-chip-aqua {
+  border-left: 3px solid #00f0ff;
+  border-right-color: rgb(255 45 149 / 0.35);
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-sun,
+[data-theme="retrowave"] .aero-chip-sun {
+  border-left: 3px solid #ffb347;
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-meadow,
+[data-theme="retrowave"] .aero-chip-meadow {
+  border-left: 3px solid #ff6b35;
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-sky,
+[data-theme="retrowave"] .aero-chip-sky {
+  border-left: 3px solid var(--rw-cyan-dim);
+}
+
+[data-theme="retrowave"] .aero-intake-chip.aero-chip-deep,
+[data-theme="retrowave"] .aero-chip-deep {
+  border-left: 3px solid var(--rw-magenta);
+}
+
+[data-theme="retrowave"] .aero-meta-chip-icon {
+  border-radius: 0.25rem !important;
+  border-color: rgb(0 240 255 / 0.45);
+  color: #060812;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 0 10px rgb(0 240 255 / 0.25);
+}
+
+[data-theme="retrowave"] .aero-meta-chip-type .aero-meta-chip-icon {
+  background: linear-gradient(180deg, #5cf0ff, #00a8b8);
+  color: #060812;
+}
+
+[data-theme="retrowave"] .aero-meta-chip-org .aero-meta-chip-icon {
+  background: linear-gradient(180deg, #ff6ec7, #ff2d95);
+  color: #060812;
+}
+
+[data-theme="retrowave"] .aero-meta-chip-year .aero-meta-chip-icon {
+  background: linear-gradient(180deg, #ffe066, #ff6b35);
+  color: #060812;
+}
+
+/* ── Filter shortcuts — neon tiles ────────────────────────────────── */
+
+[data-theme="retrowave"] .aero-shortcut-icon::after {
+  display: none;
+}
+
+[data-theme="retrowave"] .aero-shortcut-icon {
+  border-color: rgb(0 240 255 / 0.5);
+  color: #060812;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 0 14px rgb(0 240 255 / 0.35);
+}
+
+[data-theme="retrowave"] .aero-shortcut-blue .aero-shortcut-icon {
+  background: linear-gradient(180deg, #5cf0ff, #0088aa);
+}
+
+[data-theme="retrowave"] .aero-shortcut-lime .aero-shortcut-icon {
+  background: linear-gradient(180deg, #ff6ec7, #c4126a);
+}
+
+[data-theme="retrowave"] .aero-shortcut-aqua .aero-shortcut-icon {
+  background: linear-gradient(135deg, #00f0ff, #ff2d95);
+}
+
+[data-theme="retrowave"] .aero-shortcut-sun .aero-shortcut-icon {
+  background: linear-gradient(180deg, #ffe066, #ff6b35);
+}
+
+[data-theme="retrowave"] .aero-shortcut-deep .aero-shortcut-icon {
+  background: linear-gradient(180deg, #ff2d95, #6a1a8a);
+}
+
+[data-theme="retrowave"] .aero-shortcut .font-medium,
+[data-theme="retrowave"] .aero-shortcut span:not(.aero-shortcut-icon) {
+  color: var(--foreground);
+}
+
+/* ── Card overlay icons ───────────────────────────────────────────── */
+
+[data-theme="retrowave"] .group\/cover .gel-surface {
+  border-color: rgb(0 240 255 / 0.55) !important;
+  color: #060812 !important;
+  box-shadow:
+    0 0 12px rgb(0 240 255 / 0.4),
+    inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+
+[data-theme="retrowave"] .group\/cover .gel-surface svg {
+  color: #060812;
+  fill: #060812;
+}
+
+[data-theme="retrowave"] .group\/cover .chip-gel {
+  border-color: rgb(255 45 149 / 0.45);
+  background: rgb(8 12 28 / 0.75);
+  color: var(--rw-cyan) !important;
+  box-shadow: 0 0 12px rgb(255 45 149 / 0.2);
+}
+
+[data-theme="retrowave"] .group\/cover .chip-gel svg {
+  color: var(--rw-cyan);
+}
+
+/* ── Nav shell accent ─────────────────────────────────────────────── */
+
+[data-theme="retrowave"] .glass-shell.rounded-full {
+  border-radius: 999px !important;
+  border-bottom: 1px solid rgb(255 45 149 / 0.35);
+}
+
+[data-theme="retrowave"] header a.font-heading {
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] .theme-switcher svg {
+  color: var(--rw-cyan);
+}
+
+[data-theme="retrowave"] .nav-gem svg {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+/* ── Tooltips & dialogs ─────────────────────────────────────────────── */
+
+[data-theme="retrowave"] [data-slot="tooltip-content"],
+[data-theme="retrowave"] [role="tooltip"] {
+  border-radius: 0.375rem !important;
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] [data-slot="dialog-content"] {
+  color: var(--popover-foreground);
+}
+
+/* ── Reels / scrolling chrome text ────────────────────────────────── */
+
+[data-theme="retrowave"] .reels-glass-control,
+[data-theme="retrowave"] .reels-stage-bg,
+[data-theme="retrowave"] .scrolling-mode-overlay {
+  color: var(--foreground);
+}
+
+[data-theme="retrowave"] .reels-glass-control svg {
+  color: var(--rw-cyan);
+}
